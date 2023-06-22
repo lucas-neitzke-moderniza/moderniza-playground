@@ -75,7 +75,7 @@ const LayoutWrapper = props => {
         className={classnames({
           'content-wrapper': routeMeta && !routeMeta.appLayout,
           'content-area-wrapper': routeMeta && routeMeta.appLayout,
-          'container-xxl p-0': contentWidth === 'boxed'
+          'p-0': contentWidth === 'boxed'
         })}
       >
         <Tag {...(appLayoutCondition ? { className: 'content-body' } : {})}>{children}</Tag>

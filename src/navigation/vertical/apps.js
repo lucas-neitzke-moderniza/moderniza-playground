@@ -1,9 +1,29 @@
 // ** Icons Import
-import { Mail, MessageSquare, CheckSquare, Calendar, FileText, Circle, ShoppingCart, User, Shield } from 'react-feather'
+import { Mail, MessageSquare, CheckSquare, Calendar, FileText, Circle, ShoppingCart, User, Shield, List, Grid, Table } from 'react-feather'
 
 export default [
   {
     header: 'Apps & Pages'
+  },
+   // !DATAVIEWTABLE
+  {
+    id: 'dataview',
+    title: 'Dataview table',
+    icon: <Table size={20} />,
+    navLink: '/tests/dataview/table'
+  },
+  // !DATAVIEWGRID
+  {
+    id: 'datatable',
+    title: 'Datatable grid',
+    icon: <Grid size={20} />,
+    navLink: '/tests/dataview/grid'
+  },
+  {
+    id: 'listing',
+    title: 'Listing',
+    icon: <List size={20} />,
+    navLink: '/tests/listing'
   },
   {
     id: 'email',

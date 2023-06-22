@@ -1,0 +1,10 @@
+.content-area-wrapper {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    // overflow: hidden;;
+    height: calc(100vh - 155px)!important;
+}
+
+.mdz-dataview-component .p-dataview-footer, .mdz-datatable-component .p-datatable-footer {
+    padding: 0 !important;
+}

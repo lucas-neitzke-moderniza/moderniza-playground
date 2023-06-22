@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // ** React Imports
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
@@ -112,7 +113,7 @@ const VerticalLayout = props => {
   }
 
   const navbarClasses = {
-    floating: contentWidth === 'boxed' ? 'floating-nav container-xxl' : 'floating-nav',
+    floating: contentWidth === 'boxed' ? 'floating-nav' : 'floating-nav',
     sticky: 'fixed-top',
     static: 'navbar-static-top',
     hidden: 'd-none'
@@ -208,13 +209,13 @@ const VerticalLayout = props => {
           setMenuCollapsed={setMenuCollapsed}
         />
       ) : null}
-      <footer
+      {/* <footer
         className={classnames(`footer footer-light ${footerClasses[footerType] || 'footer-static'}`, {
           'd-none': footerType === 'hidden'
         })}
       >
         {footer ? footer : <FooterComponent footerType={footerType} footerClasses={footerClasses} />}
-      </footer>
+      </footer> */}
       
 
       {themeConfig.layout.scrollTop === true ? (
