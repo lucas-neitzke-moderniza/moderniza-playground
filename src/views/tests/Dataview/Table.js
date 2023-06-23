@@ -56,10 +56,10 @@ const columns = [
         sortField: 'id',
         filter: true,
         filterField: 'id',
-        filterElement: (options) => {
-            // console.log('options', options)
-            return <InputText value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
-        },
+        // filterElement: (options) => {
+        //     // console.log('options', options)
+        //     return <InputText value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
+        // },
         body: (row) => {
             return <span className="text-2xl font-semibold">{row.id}</span>
         }
@@ -71,10 +71,10 @@ const columns = [
         sortField: 'title',
         filter: true,
         filterField: 'title',
-        filterElement: (options) => {
-            // console.log('options', options)
-            return <InputText value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
-        },
+        // filterElement: (options) => {
+        //     // console.log('options', options)
+        //     return <InputText value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
+        // },
         body: (row) => {
             return <span className="text-2xl font-semibold">{row.title}</span>
         }
@@ -87,10 +87,10 @@ const columns = [
         sortField: '_score',
         filter: true,
         filterField: '_score',
-        filterElement: (options) => {
-            // console.log('options', options)
-            return <InputNumber value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
-        },
+        // filterElement: (options) => {
+        //     // console.log('options', options)
+        //     return <InputNumber value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
+        // },
         body: (row) => {
             return <span className="text-2xl font-semibold">{row._score}</span>
         }
