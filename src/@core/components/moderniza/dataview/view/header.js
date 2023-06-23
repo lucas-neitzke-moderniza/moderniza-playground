@@ -49,7 +49,9 @@ const searchBar = (loading, globalFilterValue, onGlobalFilterChange) => {
 const header = (title, loading, layout, onChangeLayout, globalFilterValue, onGlobalFilterChange) => {
     return (
         <div className="flex flex-wrap gap-2 justify-content-end align-items-center">
+            <div className="flex me-auto">
             <h4 className="m-0">{ title }</h4>
+            </div>
             {
                 searchBar(loading, globalFilterValue, onGlobalFilterChange)
             }

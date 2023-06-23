@@ -41,43 +41,57 @@ import 'primeicons/primeicons.css'
  * @returns {JSX.Element}
  */
 const View = (props) => {
+
     /**
-     * @type {DataviewOptions}
+     * @type {DataviewOptions} options
      */
     const options = props.options.build ? props.options : new DataviewOptions(props.options)
+    const templates = options.templates
 
     // * LAYOUT
     const supportedLayouts = ['grid', 'list', 'table']
+
     const [layout, setLayout] = useState(options.type)
     const [loading, setLoading] = useState(true)
-    const templates = options.templates
-    console.log('templates', templates)
-    const [title, setTitle] = useState(options.title)
+    const [title, setTitle] = useState(options?.title || false)
 
     // * PAGINATION
+    const peerPageDefaultOptions = [
+        { label: 5, value: 5 },
+        { label: 10, value: 10 },
+        { label: 20, value: 20 },
+        { label: 30, value: 30 }
+    ]
+
+    const [peerPageOptions] = useState(options?.pagination?.peerPageOptions.map(function (quantity) {
+        return { label: quantity, value: quantity }
+    }) || peerPageDefaultOptions)
+
     const [page, setPage] = useState(0)
     const [first, setFirst] = useState(0)
-    const [rows, setRows] = useState(5)
-    const [results, setResults] = useState([])
+    const [rows, setRows] = useState(options?.pagination?.peerPage || 5)
     const [totalRecords, setTotalRecords] = useState(0)
 
     // *SORTS
-    const [sortField, setSortField] = useState(null)
-    const [sortOrder, setSortOrder] = useState(null)
+    const [sortField, setSortField] = useState(options?.sorts?.sortField || null)
+    const [sortOrder, setSortOrder] = useState(options?.sorts?.sortOrder || 1)
 
     // * FILTERS
     const [filters, setFilters] = useState(options?.filters || [])
-    console.log('filters', filters)
 
     // *GLOBAL FILTER
     const [globalFilterValue, setGlobalFilterValue] = useState(options?.filters?.global?.value || '')
+
+    // *DATAVIEW RESULTS
+    const [results, setResults] = useState([])
 
     const freshComponent = async () => {
 
         setLoading(true)
         setResults([])
         setTotalRecords(0)
-        // *START REQUEST
+
+        // *STARTS THE REQUEST
         const _results = await DataviewRequest(
             options.onRequest,
             new DataviewRequestEvent({
@@ -92,8 +106,6 @@ const View = (props) => {
                 filters
             })
         )
-
-        console.log('reuslts', _results)
 
         const content = _results.build ? _results : new DataviewRequestContent(_results)
 
@@ -123,7 +135,7 @@ const View = (props) => {
     // *START EFFECT
     useEffect(() => {
         freshComponent()
-    }, [page, sortField, sortOrder])
+    }, [page, sortField, sortOrder, rows])
 
     const onSortChange = (e) => {
         if (options.onSortChange) options.onSortChange(e)
@@ -157,14 +169,15 @@ const View = (props) => {
         setLayout(newLayout)
     }
 
-    const getGlobalFilters = () => {
+    const onChangePeerPageCallback = (e) => {
+        setFirst(0)
+        setRows(e.value === totalRecords ? totalRecords : e.value)
+    }
 
-        const keys = Object.keys(filters).filter(function (item) {
+    const getGlobalFilters = () => {
+        return Object.keys(filters).filter(function (item) {
             return item !== 'global'
         })
-
-        console.log('filters keys', keys)
-        return keys
     }
 
     const itemTemplate = (row, actualLayout) => {
@@ -196,7 +209,9 @@ const View = (props) => {
                                     first,
                                     rows,
                                     totalRecords,
-                                    onPageChange
+                                    onPageChange,
+                                    peerPageOptions,
+                                    onChangePeerPageCallback
                                 )}
                             />
                         </div>
@@ -216,13 +231,14 @@ const View = (props) => {
                             value={results}
                             filters={filters}
                             globalFilterFields={getGlobalFilters()}
-                            // globalFilterMatchMode="contains"
-                            // filterDisplay="menu"
+                            filterDisplay="menu"
                             footer={footer(
                                 first,
                                 rows,
                                 totalRecords,
-                                onPageChange
+                                onPageChange,
+                                peerPageOptions,
+                                onChangePeerPageCallback
                             )}
                             onSort={onSortChange}
                             onFilter={onFilterChange}
@@ -235,7 +251,7 @@ const View = (props) => {
                                     dataType={col.dataType}
                                     field={col.field}
                                     filter={col.filter}
-                                    filterField={col.filter}
+                                    filterField={col.filterField}
                                     filterElement={col.filterElement}
                                     sortable={col.sortable}
                                     sortField={col.sortField}

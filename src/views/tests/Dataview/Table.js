@@ -57,7 +57,7 @@ const columns = [
         filter: true,
         filterField: 'id',
         filterElement: (options) => {
-            console.log('options', options)
+            // console.log('options', options)
             return <InputText value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
         },
         body: (row) => {
@@ -72,7 +72,7 @@ const columns = [
         filter: true,
         filterField: 'title',
         filterElement: (options) => {
-            console.log('options', options)
+            // console.log('options', options)
             return <InputText value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
         },
         body: (row) => {
@@ -88,7 +88,7 @@ const columns = [
         filter: true,
         filterField: '_score',
         filterElement: (options) => {
-            console.log('options', options)
+            // console.log('options', options)
             return <InputNumber value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
         },
         body: (row) => {
@@ -105,13 +105,18 @@ const optionsTable = {
     },
     pagination: {
         page: 0,
-        peerPage: 5
+        peerPage: 5,
+        peerPageOptions: [5, 10, 20, 30, 50]
+    },
+    sorts: {
+        sortField: 'title',
+        sortOrder: 1
     },
     filters: {
-        global: { value: '', matchMode: FilterMatchMode.CONTAINS },
-        title: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-        id: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-        _score: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.GREATER_THAN }] }
+        global: { value: 'Jose', matchMode: FilterMatchMode.CONTAINS },
+        title: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.STARTS_WITH }] },
+        id: { operator: FilterOperator.OR, constraints: [{ value: '', matchMode: FilterMatchMode.EQUALS }] },
+        _score: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.GREATER_THAN }] }
     },
     /**
      * @param {DataviewRequestEvent} event
@@ -137,7 +142,7 @@ const optionsTable = {
         console.log('onSortChangeExternal', ev)
     },
     onFilterChange: (ev) => {
-        console.log('onSortChangeExternal', ev)
+        console.log('onFilterChangeExternal', ev)
     }
 }
 

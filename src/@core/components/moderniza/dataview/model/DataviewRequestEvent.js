@@ -1,13 +1,24 @@
 
+/**
+ * Object of function parameter used in 'onRequest'
+ */
 class DataviewRequestEvent {
 
     /**
      * @param {Object} options
+     * 
      * @param {Object} options.pagination
-     * @param {Object} options.filters
+     * @param {Number} options.pagination.page default:0
+     * @param {Number} options.pagination.peerPage default: 5
+     * 
+     * @param {{value: String, operator: Object, 
+     * matchMode: String, constraints: {
+     * value: String, matchMode: String
+     * }}[]} options.filters primereact api filters
+     * 
      * @param {Object} options.sorts
-     * @param {String} options.sorts.sortField
-     * @param {Number} options.sorts.sortOrder
+     * @param {String|null} options.sorts.sortField default: null
+     * @param {Number|null} options.sorts.sortOrder 1 = ascending, -1 = descending, default: 1
      */
     constructor(options) {
         this.pagination = options.pagination

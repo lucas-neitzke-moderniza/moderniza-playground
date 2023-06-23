@@ -56,7 +56,7 @@ const container = document.getElementById('root')
 const root = createRoot(container)
 
 root.render(
-  <StrictMode>
+  // <StrictMode>
     <BrowserRouter>
       <Provider store={store}>
         <Suspense fallback={<Spinner />}>
@@ -69,7 +69,7 @@ root.render(
         </Suspense>
       </Provider>
     </BrowserRouter>
-  </StrictMode>
+  // </StrictMode>
 )
 
 // If you want your app to work offline and load faster, you can change

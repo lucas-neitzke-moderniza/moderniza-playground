@@ -16,12 +16,15 @@ import { ProductService } from '../../../listing/service/ProductService'
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview'
 import { Paginator } from 'primereact/paginator'
 
+import paginatorLeft from './paginatorLeft'
+import paginatorRight from './paginatorRight'
+
 import 'primeflex/primeflex.css'
 import 'primereact/resources/themes/lara-light-indigo/theme.css'   // theme
 import 'primereact/resources/primereact.css'
 import 'primeicons/primeicons.css'
 
-const footer = (first, rows, totalRecords, onPageChange) => {
+const footer = (first, rows, totalRecords, onPageChange, peerPageOptions, onChangePeerPageCallback) => {
     return (
         <>
             <Paginator
@@ -29,8 +32,8 @@ const footer = (first, rows, totalRecords, onPageChange) => {
                 rows={rows}
                 totalRecords={totalRecords}
                 onPageChange={onPageChange}
-            // rightContent={paginatorRight}
-            // leftContent={paginatorLeft}
+                rightContent={paginatorRight(rows, peerPageOptions, onChangePeerPageCallback)}
+                leftContent={paginatorLeft(totalRecords)}
             />
         </>
     )

@@ -7,15 +7,15 @@ export default [
   },
    // !DATAVIEWTABLE
   {
-    id: 'dataview',
+    id: 'dataviewtable',
     title: 'Dataview table',
     icon: <Table size={20} />,
     navLink: '/tests/dataview/table'
   },
   // !DATAVIEWGRID
   {
-    id: 'datatable',
-    title: 'Datatable grid',
+    id: 'dataviewgrid',
+    title: 'Dataview grid',
     icon: <Grid size={20} />,
     navLink: '/tests/dataview/grid'
   },
