@@ -37,6 +37,8 @@
     "i18next-xhr-backend": "3.2.2",
     "jquery": "^3.6.0",
     "jsonwebtoken": "8.5.1",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.29",
     "moment": "^2.29.3",
     "nouislider": "^15.5.0",
     "nouislider-react": "^3.4.1",

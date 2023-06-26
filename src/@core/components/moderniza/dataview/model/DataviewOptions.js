@@ -1,3 +1,4 @@
+import { Exception } from "sass"
 import { DataviewRequest } from "../controller"
 
 /**
@@ -7,7 +8,7 @@ class DataviewOptions {
     /**
      * @param {Object} options 
      * 
-     * @param {String} options.type default: table
+     * @param {String} options.type default: 'table'
      * @param {String|Boolean} options.title default: false
      * 
      * @param {Object} options.pagination
@@ -15,14 +16,14 @@ class DataviewOptions {
      * @param {Number} options.pagination.peerPage default: 5
      * @param {Number[]} options.pagination.peerPageOptions default: array (5,10,20,30)
      * 
-     * @param {{value: String, operator: Object, 
+     * @param {{value: String|Null, operator: Object, 
      * matchMode: String, constraints: {
-     * value: String, matchMode: String
-     * }}[]} options.filters primereact api filters
+     * value: String|Null, matchMode: String
+     * }}[]} options.filters primereact datatable api filters
      * 
      * @param {Object} options.sorts
-     * @param {String|null} options.sorts.sortField default: null
-     * @param {Number|null} options.sorts.sortOrder 1 = ascending, -1 = descending, default: 1
+     * @param {String|Null} options.sorts.sortField default: Null
+     * @param {Number|Null} options.sorts.sortOrder 1 = ascending, -1 = descending, default: 1
      * 
      * @param {Object} options.templates
      * @param {{header: String, field: String, 
@@ -32,6 +33,11 @@ class DataviewOptions {
      * @param {Function} options.templates.grid grid template
      * @param {Function} options.templates.list list template
      * 
+     * @param {Object} options.export 
+     * @param {{fileName: String}} options.export.xls
+     * @param {{fileName: String}} options.export.pdf
+     * @param {{fileName: String}} options.export.csv
+     * 
      * @param {DataviewRequest} options.onRequest callback to execute when component requests
      * @param {Function} options.onPageChange callback to execute when the page change
      * @param {Function} options.onSortChange callback to execute when the sort change
@@ -40,17 +46,34 @@ class DataviewOptions {
      * @param {Boolean} options.build flag
      */
     constructor(options) {
-        this.type = options.type
-        this.title = options.title
-        this.pagination = options.pagination
-        this.sorts = options.sorts
-        this.filters = options.filters
-        this.templates = options.templates
-        this.onRequest = options.onRequest
-        this.onPageChange = options.onPageChange
-        this.onSortChange = options.onSortChange
-        this.onFilterChange = options.onFilterChange
-        this.build = true
+        try {
+            // TODO: Fazer validações
+            // throw new Exception()...
+
+            // *CONFIG
+            this.type = options.type
+            this.title = options.title
+            this.pagination = options.pagination
+            this.sorts = options.sorts
+            this.filters = options.filters
+            this.templates = options.templates
+            this.export = options.export
+            
+            // *CALLBACKS
+            this.onRequest = options.onRequest
+            this.onPageChange = options.onPageChange
+            this.onSortChange = options.onSortChange
+            this.onFilterChange = options.onFilterChange
+
+            // ?FLAG to do some verifications
+            this.build = true
+        } catch (error) {
+            /**
+             * @type {Exception}
+            */
+            const e = error
+            throw new Exception(e.message)
+        }
     }
 
 }

@@ -3,12 +3,14 @@ import { DataviewRequestEvent, DataviewRequestContent } from "../model"
 /**
  * Function that requests a async callback with state as parameter
  * 
+ * @async
  * @param {Function} callback function that requests
  * @param {DataviewRequestEvent} state current state
- * @returns {DataviewRequestContent}
+ * @returns {Promise<DataviewRequestContent>}
  */
 const DataviewRequest = async (callback, state) => {
-    return await callback(state)
+    const response = await callback(state)
+    return new DataviewRequestContent(response)
 }
 
 export default DataviewRequest

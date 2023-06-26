@@ -1,36 +1,22 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
-import { InputText } from 'primereact/inputtext'
-import { Dropdown } from 'primereact/dropdown'
-import { InputNumber } from 'primereact/inputnumber'
-import { Button } from 'primereact/button'
-import { ProgressBar } from 'primereact/progressbar'
-import { Calendar } from 'primereact/calendar'
-import { MultiSelect } from 'primereact/multiselect'
-import { Slider } from 'primereact/slider'
-import { Tag } from 'primereact/tag'
-import { OverlayPanel } from 'primereact/overlaypanel'
-import { ProductService } from '../../../listing/service/ProductService'
-import { DataView, DataViewLayoutOptions } from 'primereact/dataview'
-import { Paginator } from 'primereact/paginator'
+import { DataView } from 'primereact/dataview'
 
-// *API DE FILTROS
-import { FilterMatchMode, FilterOperator } from 'primereact/api'
-
-// *MVCS
+// *MVC
 import { DataviewRequest } from '../controller'
-import { DataviewRequestEvent, DataviewRequestContent, DataviewOptions } from '../model'
+import { DataviewRequestEvent, DataviewOptions } from '../model'
 
-// *headers
-import { viewHeader, header } from './header.js'
+// *HEADER
+import { header } from './header.js'
 
-// *footers
+// *FOOTER
 import { footer } from './footer.js'
 
+// *STYLES
 import 'primeflex/primeflex.css'
-import 'primereact/resources/themes/lara-light-indigo/theme.css'   // theme
+import 'primereact/resources/themes/lara-light-indigo/theme.css' 
 import 'primereact/resources/primereact.css'
 import 'primeicons/primeicons.css'
 
@@ -43,19 +29,29 @@ import 'primeicons/primeicons.css'
 const View = (props) => {
 
     /**
-     * @type {DataviewOptions} options
+     * Component options
+     * @type {DataviewOptions}
      */
     const options = props.options.build ? props.options : new DataviewOptions(props.options)
     const templates = options.templates
 
-    // * LAYOUT
+    // *REFERENCES
+    const dataTableRef = useRef(null)
+    const dataViewRef = useRef(null)
+    const exportOverPanelRef = useRef(null)
+
+    const exportColumns = options.templates.columns.map((col) => {
+        return { title: col.header, dataKey: col.field }
+    })
+
+    // ? LAYOUT REFACTORY: colocar no dataviewoptions com demais validações
     const supportedLayouts = ['grid', 'list', 'table']
 
     const [layout, setLayout] = useState(options.type)
     const [loading, setLoading] = useState(true)
     const [title, setTitle] = useState(options?.title || false)
 
-    // * PAGINATION
+    // ? REFACTORY: PAGINATION
     const peerPageDefaultOptions = [
         { label: 5, value: 5 },
         { label: 10, value: 10 },
@@ -85,14 +81,14 @@ const View = (props) => {
     // *DATAVIEW RESULTS
     const [results, setResults] = useState([])
 
+    // *FRESH THE COMPONENT
     const freshComponent = async () => {
 
         setLoading(true)
         setResults([])
         setTotalRecords(0)
 
-        // *STARTS THE REQUEST
-        const _results = await DataviewRequest(
+        const request = await DataviewRequest(
             options.onRequest,
             new DataviewRequestEvent({
                 pagination: {
@@ -107,11 +103,9 @@ const View = (props) => {
             })
         )
 
-        const content = _results.build ? _results : new DataviewRequestContent(_results)
-
-        if (content.content && content.total) {
-            setResults(content.content)
-            setTotalRecords(content.total)
+        if (request.content && request.total) {
+            setResults(request.content)
+            setTotalRecords(request.total)
         }
 
         setLoading(false)
@@ -137,12 +131,14 @@ const View = (props) => {
         freshComponent()
     }, [page, sortField, sortOrder, rows])
 
+    // *SORT CALLBACK
     const onSortChange = (e) => {
         if (options.onSortChange) options.onSortChange(e)
         setSortField(e.sortField)
         setSortOrder(e.sortOrder)
     }
 
+    // *PAGE CALLBACK
     const onPageChange = (e, index) => {
         if (e.page !== page) {
             if (options.onPageChange) options.onPageChange(e, index)
@@ -152,10 +148,12 @@ const View = (props) => {
         }
     }
 
+    //*FILTER CALLBACK
     const onFilterChange = (e) => {
         if (options.onFilterChange) options.onFilterChange(e)
     }
 
+    // *GLOBAL FILTER CALLBACK
     const onGlobalFilterChange = (e) => {
         const value = e.target.value
         let _filters = {}
@@ -165,16 +163,18 @@ const View = (props) => {
         setGlobalFilterValue(value)
     }
 
+    // *LAYOUT CALLBACK
     const onChangeLayout = (newLayout) => {
         setLayout(newLayout)
     }
 
+    // *PEERPAGE CALLBACK
     const onChangePeerPageCallback = (e) => {
         setFirst(0)
-        setRows(e.value === totalRecords ? totalRecords : e.value)
+        setRows(e.value)
     }
 
-    const getGlobalFilters = () => {
+    const getGlobalFiltersFields = () => {
         return Object.keys(filters).filter(function (item) {
             return item !== 'global'
         })
@@ -187,13 +187,14 @@ const View = (props) => {
     return (
         <div>
             {
-                console.log('results', results, 'first', first, 'rows', rows, 'total', totalRecords)
+                console.log('results', results, 'first', first, 'rows', rows, 'total', totalRecords, 'options', options)
             }
             {
                 layout === 'grid' || layout === 'list' ? (
                     <>
                         <div className="card">
                             <DataView
+                                ref={dataViewRef}
                                 value={results}
                                 layout={layout}
                                 itemTemplate={itemTemplate}
@@ -203,7 +204,8 @@ const View = (props) => {
                                     layout,
                                     onChangeLayout,
                                     globalFilterValue,
-                                    onGlobalFilterChange
+                                    onGlobalFilterChange,
+                                    options.export
                                 )}
                                 footer={footer(
                                     first,
@@ -219,6 +221,7 @@ const View = (props) => {
                 ) : (
                     <>
                         <DataTable
+                            ref={dataTableRef}
                             loading={loading}
                             header={header(
                                 title,
@@ -226,11 +229,18 @@ const View = (props) => {
                                 layout,
                                 onChangeLayout,
                                 globalFilterValue,
-                                onGlobalFilterChange
+                                onGlobalFilterChange,
+                                options.export,
+                                dataTableRef,
+                                exportOverPanelRef,
+                                // ? REFACTORY: send empty data if export options is not present
+                                !options.export ? [] : results,
+                                exportColumns
                             )}
                             value={results}
                             filters={filters}
-                            globalFilterFields={getGlobalFilters()}
+                            exportFilename={options.export.fileName}
+                            globalFilterFields={getGlobalFiltersFields()}
                             filterDisplay="menu"
                             footer={footer(
                                 first,

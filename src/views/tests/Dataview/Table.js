@@ -118,6 +118,31 @@ const optionsTable = {
         id: { operator: FilterOperator.OR, constraints: [{ value: '', matchMode: FilterMatchMode.EQUALS }] },
         _score: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.GREATER_THAN }] }
     },
+    export: {
+        fileName: 'artists'
+        // csv: {
+        //     label: 'Exportar (.csv)',
+        //     icon: 'pi pi-file',
+        //     className: 'test-class',
+        //     style: {
+        //         fontWeight: 'normal'
+        //     }
+        // },
+        // xlsx: {
+        //     label: 'Exportar (.xlsx)',
+        //     icon: 'pi pi-file-excel',
+        //     className: 'test-class',
+        //     style: ''
+        // },
+        // pdf: {
+        //     label: 'Exportar (.pdf)',
+        //     icon: 'pi pi-file-pdf',
+        //     className: 'test-class',
+        //     style: {
+        //         fontWeight: 'normal'
+        //     }
+        // }
+    },
     /**
      * @param {DataviewRequestEvent} event
      * @returns {DataviewRequestContent}

@@ -21,6 +21,12 @@ import 'primereact/resources/themes/lara-light-indigo/theme.css'   // theme
 import 'primereact/resources/primereact.css'
 import 'primeicons/primeicons.css'
 
+import {
+    exportCSV,
+    exportPdf,
+    exportExcel
+} from '../controller/DataviewExport'
+
 const layoutButton = (layout, callback) => {
     return (
         <div className="flex justify-content-end">
@@ -46,14 +52,78 @@ const searchBar = (loading, globalFilterValue, onGlobalFilterChange) => {
     )
 }
 
-const header = (title, loading, layout, onChangeLayout, globalFilterValue, onGlobalFilterChange) => {
+const exportButton = (optionsExport, dataTableRef, results, exportColumns, exportOverPanelRef) => {
+    return (
+        <div className="flex">
+            <Button type="button" size='small' severity='success' icon="pi pi-file-export" label="Exportar" onClick={(e) => exportOverPanelRef.current.toggle(e)} />
+            <OverlayPanel ref={exportOverPanelRef}>
+                {
+                    optionsExport?.xlsx ? (
+                        <div className='mb-1'>
+                            <Button type="button"
+                                className={optionsExport?.xlsx?.className || ''}
+                                size={optionsExport?.xlsx?.size || 'small'}
+                                severity={optionsExport?.xlsx?.severity || 'success'}
+                                label={optionsExport?.xlsx?.label || 'Planilha (.xlsx)'}
+                                icon={optionsExport?.xlsx?.icon || 'pi pi-file-excel'}
+                                style={optionsExport?.xlsx?.style || { minWidth: '160px' }}
+                                onClick={() => {
+                                    exportExcel(results, optionsExport?.fileName)
+                                }} />
+                        </div>
+                    ) : ''
+                }
+                {
+                    optionsExport?.pdf ? (
+                        <div className='mb-1'>
+                            <Button type="button"
+                                className={optionsExport?.pdf?.className || ''}
+                                size={optionsExport?.pdf?.size || 'small'}
+                                severity={optionsExport?.pdf?.severity || 'primary'}
+                                label={optionsExport?.pdf?.label || 'Documento (.pdf)'}
+                                icon={optionsExport?.pdf?.icon || 'pi pi-file-pdf'}
+                                style={optionsExport?.pdf?.style || { minWidth: '160px' }}
+                                onClick={() => {
+                                    exportExcel(results, optionsExport?.fileName)
+                                }} />
+                        </div>
+                    ) : ''
+                }
+                {
+                    optionsExport?.csv ? (
+                        <div className='mb-1'>
+                            <Button type="button"
+                                className={optionsExport?.csv?.className || ''}
+                                size={optionsExport?.csv?.size || 'small'}
+                                severity={optionsExport?.csv?.severity || 'secondary'}
+                                label={optionsExport?.csv?.label || 'Arquivo (.csv)'}
+                                icon={optionsExport?.csv?.icon || 'pi pi-file'}
+                                style={optionsExport?.csv?.style || { minWidth: '160px' }}
+                                onClick={() => {
+                                    exportExcel(results, optionsExport?.fileName)
+                                }} />
+                        </div>
+                    ) : ''
+                }
+            </OverlayPanel>
+        </div>
+    )
+}
+
+const header = (title, loading, layout, onChangeLayout, globalFilterValue, onGlobalFilterChange, optionsExport, dataTableRef, exportOverPanelRef, results, exportColumns) => {
     return (
         <div className="flex flex-wrap gap-2 justify-content-end align-items-center">
+            {
+                console.log('optionsExport', optionsExport, optionsExport !== false)
+            }
             <div className="flex me-auto">
-            <h4 className="m-0">{ title }</h4>
+                <h4 className="m-0">{title}</h4>
             </div>
             {
                 searchBar(loading, globalFilterValue, onGlobalFilterChange)
+            }
+            {
+                optionsExport !== false ? exportButton(optionsExport, dataTableRef, results, exportColumns, exportOverPanelRef) : ''
             }
             {
                 layout !== 'table' ? layoutButton(layout, onChangeLayout) : ''
