@@ -53,14 +53,25 @@ const searchBar = (loading, globalFilterValue, onGlobalFilterChange) => {
 }
 
 const exportButton = (optionsExport, dataTableRef, results, exportColumns, exportOverPanelRef) => {
+    /**
+     * @type {Array}
+     */
+    const extensions = optionsExport?.extensions
     return (
         <div className="flex">
-            <Button type="button" size='small' severity='success' icon="pi pi-file-export" label="Exportar" onClick={(e) => exportOverPanelRef.current.toggle(e)} />
+            <Button
+                type={optionsExport?.severity || 'button'}
+                size={optionsExport?.severity || 'small'}
+                severity={optionsExport?.severity || 'success'}
+                icon={optionsExport?.icon || 'pi pi-file-export'}
+                label={optionsExport?.label || 'Exportar'}
+                onClick={(e) => exportOverPanelRef.current.toggle(e)} />
             <OverlayPanel ref={exportOverPanelRef}>
                 {
-                    optionsExport?.xlsx ? (
+                    (optionsExport?.xlsx || extensions.includes('xlsx')) ? (
                         <div className='mb-1'>
-                            <Button type="button"
+                            <Button
+                                type={optionsExport?.xlsx?.type || 'button'}
                                 className={optionsExport?.xlsx?.className || ''}
                                 size={optionsExport?.xlsx?.size || 'small'}
                                 severity={optionsExport?.xlsx?.severity || 'success'}
@@ -74,9 +85,10 @@ const exportButton = (optionsExport, dataTableRef, results, exportColumns, expor
                     ) : ''
                 }
                 {
-                    optionsExport?.pdf ? (
+                    (optionsExport?.pdf || extensions.includes('pdf')) ? (
                         <div className='mb-1'>
-                            <Button type="button"
+                            <Button
+                                type={optionsExport?.pdf?.type || 'button'}
                                 className={optionsExport?.pdf?.className || ''}
                                 size={optionsExport?.pdf?.size || 'small'}
                                 severity={optionsExport?.pdf?.severity || 'primary'}
@@ -84,15 +96,16 @@ const exportButton = (optionsExport, dataTableRef, results, exportColumns, expor
                                 icon={optionsExport?.pdf?.icon || 'pi pi-file-pdf'}
                                 style={optionsExport?.pdf?.style || { minWidth: '160px' }}
                                 onClick={() => {
-                                    exportExcel(results, optionsExport?.fileName)
+                                    exportPdf(results, optionsExport?.fileName, exportColumns)
                                 }} />
                         </div>
                     ) : ''
                 }
                 {
-                    optionsExport?.csv ? (
+                    (optionsExport?.csv || extensions.includes('csv')) ? (
                         <div className='mb-1'>
-                            <Button type="button"
+                            <Button
+                                type={optionsExport?.csv?.type || 'button'}
                                 className={optionsExport?.csv?.className || ''}
                                 size={optionsExport?.csv?.size || 'small'}
                                 severity={optionsExport?.csv?.severity || 'secondary'}
@@ -100,7 +113,7 @@ const exportButton = (optionsExport, dataTableRef, results, exportColumns, expor
                                 icon={optionsExport?.csv?.icon || 'pi pi-file'}
                                 style={optionsExport?.csv?.style || { minWidth: '160px' }}
                                 onClick={() => {
-                                    exportExcel(results, optionsExport?.fileName)
+                                    exportCSV(dataTableRef, false)
                                 }} />
                         </div>
                     ) : ''
@@ -110,12 +123,52 @@ const exportButton = (optionsExport, dataTableRef, results, exportColumns, expor
     )
 }
 
-const header = (title, loading, layout, onChangeLayout, globalFilterValue, onGlobalFilterChange, optionsExport, dataTableRef, exportOverPanelRef, results, exportColumns) => {
+const sortButton = (sorts, sortKey, onSortChange) => {
+    // console.log('sortOptions', sortOptions, 'sortKey', sortKey, 'onSortChange', onSortChange)
+
+    /**
+     * 
+     * @param {*} value 
+     * @param {Array} sortOptions 
+     */
+    const getState = (value, sortOptions) => {
+        const sortTest = sortOptions.filter((item) => {
+            return item.value === value
+        })[0]
+        // console.log('sortTest', sortTest)
+        return sortTest
+    }
+
+    const getOptions = (_options) => {
+        const options = []
+        _options.forEach((item) => {
+            options.push({
+                label: item.label,
+                value: item.value
+            })
+        })
+        return options
+    }
+
+    return (
+        <div className="flex">
+            <Dropdown options={getOptions(sorts.sortOptions)} value={sortKey} placeholder="Orderder por preço" optionLabel="label" onChange={(e) => {
+                // console.log('event aq', e)
+                const actualState = getState(e.value, sorts.sortOptions)
+                // console.log('test', actualState)
+                onSortChange({
+                    sortField: actualState.sorts.sortField,
+                    sortOrder: actualState.sorts.sortOrder,
+                    sortKey: e.value
+                })
+            }} className="w-full sm:w-14rem" />
+        </div>
+    )
+}
+
+const header = (title, loading, layout, onChangeLayout, globalFilterValue, onGlobalFilterChange, optionsExport, dataTableRefOrSorts, exportOverPanelRefOrSortKey, resultsOrOnSortChange, exportColumns) => {
     return (
         <div className="flex flex-wrap gap-2 justify-content-end align-items-center">
-            {
-                console.log('optionsExport', optionsExport, optionsExport !== false)
-            }
             <div className="flex me-auto">
                 <h4 className="m-0">{title}</h4>
             </div>
@@ -123,7 +176,11 @@ const header = (title, loading, layout, onChangeLayout, globalFilterValue, onGlo
                 searchBar(loading, globalFilterValue, onGlobalFilterChange)
             }
             {
-                optionsExport !== false ? exportButton(optionsExport, dataTableRef, results, exportColumns, exportOverPanelRef) : ''
+                // ?REFACTORY: options.export, valor padrao = false, caso undefined
+                optionsExport !== false && layout === 'table' ? exportButton(optionsExport, dataTableRefOrSorts, resultsOrOnSortChange, exportColumns, exportOverPanelRefOrSortKey) : ''
+            }
+            {
+                layout !== 'table' ? sortButton(dataTableRefOrSorts, exportOverPanelRefOrSortKey, resultsOrOnSortChange) : ''
             }
             {
                 layout !== 'table' ? layoutButton(layout, onChangeLayout) : ''

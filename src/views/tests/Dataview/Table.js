@@ -16,6 +16,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api'
 
 // ** moderniza
 import { Dataview } from '../../../@core/components/moderniza'
+
 import { DataviewRequestContent, DataviewOptions, DataviewRequestEvent } from '../../../@core/components/moderniza/dataview/model'
 
 /**
@@ -46,6 +47,63 @@ const getData = async (event) => {
     } catch (error) {
         throw new Error(error.message)
     }
+}
+
+const getSeverity = () => {
+    const severities = ['success', 'info', 'warning', 'danger']
+    return severities[Math.floor(Math.random() * severities.length)]
+}
+
+const list = (row) => {
+    return (
+        <div className="col-12">
+            <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
+                <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={'https://picsum.photos/200'} alt={row.title} />
+                <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                    <div className="flex flex-column align-items-center sm:align-items-start gap-3">
+                        <div className="text-2xl font-bold text-900">{row.title}</div>
+                        <Rating value={row.rating} readOnly cancel={false}></Rating>
+                        <div className="flex align-items-center gap-3">
+                            <span className="flex align-items-center gap-2">
+                                <i className="pi pi-tag"></i>
+                                <span className="font-semibold">{row.category}</span>
+                            </span>
+                            <Tag value={row.inventoryStatus} severity={getSeverity()}>Teste</Tag>
+                        </div>
+                    </div>
+                    <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                        <span className="text-2xl font-semibold">${row.price}</span>
+                        <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={row.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const grid = (row) => {
+    return (
+        <div className="col-12 sm:col-6 lg:col-4 xl:col-4 p-2">
+            <div className="p-4 border-1 surface-border surface-card border-round">
+                <div className="flex flex-wrap align-items-center justify-content-between gap-2">
+                    <div className="flex align-items-center gap-2">
+                        <i className="pi pi-tag"></i>
+                        <span className="font-semibold">{row.category}</span>
+                    </div>
+                    <Tag value={row.inventoryStatus} severity={getSeverity()}>Teste</Tag>
+                </div>
+                <div className="flex flex-column align-items-center gap-3 py-5">
+                    <img className="w-9 shadow-2 border-round" src={'https://picsum.photos/200'} alt={row.title} />
+                    <div className="text-2xl font-bold">{row.title}</div>
+                    <Rating value={row.rating} readOnly cancel={false}></Rating>
+                </div>
+                <div className="flex align-items-center justify-content-between">
+                    <span className="text-2xl font-semibold">${row.price}</span>
+                    <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={row.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 const columns = [
@@ -101,7 +159,9 @@ const optionsTable = {
     title: 'Artistas',
     type: 'table',
     templates: {
-        columns
+        columns,
+        list,
+        grid
     },
     pagination: {
         page: 0,
@@ -110,7 +170,26 @@ const optionsTable = {
     },
     sorts: {
         sortField: 'title',
-        sortOrder: 1
+        sortOrder: 1,
+        placeholder: 'Ordenar lista',
+        sortOptions: [
+            {
+                label: 'Score ascendente',
+                value: 'score_ascending',
+                sorts: {
+                    sortOrder: 1,
+                    sortField: '_score'
+                }
+            },
+            {
+                label: 'Score descendente',
+                value: 'score_descending',
+                sorts: {
+                    sortOrder: -1,
+                    sortField: '_score'
+                }
+            }
+        ]
     },
     filters: {
         global: { value: 'Jose', matchMode: FilterMatchMode.CONTAINS },
@@ -119,29 +198,16 @@ const optionsTable = {
         _score: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.GREATER_THAN }] }
     },
     export: {
+        extensions: ['xlsx', 'pdf', 'csv'],
         fileName: 'artists'
-        // csv: {
-        //     label: 'Exportar (.csv)',
-        //     icon: 'pi pi-file',
-        //     className: 'test-class',
-        //     style: {
-        //         fontWeight: 'normal'
-        //     }
-        // },
-        // xlsx: {
-        //     label: 'Exportar (.xlsx)',
-        //     icon: 'pi pi-file-excel',
-        //     className: 'test-class',
-        //     style: ''
-        // },
-        // pdf: {
-        //     label: 'Exportar (.pdf)',
-        //     icon: 'pi pi-file-pdf',
-        //     className: 'test-class',
-        //     style: {
-        //         fontWeight: 'normal'
-        //     }
-        // }
+    },
+    responsive: {
+        xs: 'grid',
+        sm: 'grid',
+        md: 'table',
+        lg: 'table',
+        xl: 'list',
+        xxl: 'grid'
     },
     /**
      * @param {DataviewRequestEvent} event
@@ -179,6 +245,7 @@ const testDataview = () => {
             <div className='content-right'>
                 <div className='content-body'>
                     <Dataview options={options} />
+                    {/* <Dataview options={optionsTable} /> */}
                 </div>
             </div>
         </Fragment>

@@ -1,6 +1,6 @@
 
 /**
- * Object of function parameter used in 'onRequest'
+ * Event parameter used in 'onRequest'
  */
 class DataviewRequestEvent {
 
@@ -11,10 +11,8 @@ class DataviewRequestEvent {
      * @param {Number} options.pagination.page default:0
      * @param {Number} options.pagination.peerPage default: 5
      * 
-     * @param {{value: String, operator: Object, 
-     * matchMode: String, constraints: {
-     * value: String, matchMode: String
-     * }}[]} options.filters primereact api filters
+     * @param {{value: String, operator: Object, matchMode: String, constraints: {
+     * value: String, matchMode: String}}[]} options.filters primereact api filters
      * 
      * @param {Object} options.sorts
      * @param {String|null} options.sorts.sortField default: null

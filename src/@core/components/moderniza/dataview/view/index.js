@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { DataView } from 'primereact/dataview'
 
 // *MVC
-import { DataviewRequest } from '../controller'
+import { DataviewRequest, DataviewDeviceSize, DataviewResponsive } from '../controller'
 import { DataviewRequestEvent, DataviewOptions } from '../model'
 
 // *HEADER
@@ -16,7 +16,7 @@ import { footer } from './footer.js'
 
 // *STYLES
 import 'primeflex/primeflex.css'
-import 'primereact/resources/themes/lara-light-indigo/theme.css' 
+import 'primereact/resources/themes/lara-light-indigo/theme.css'
 import 'primereact/resources/primereact.css'
 import 'primeicons/primeicons.css'
 
@@ -40,9 +40,10 @@ const View = (props) => {
     const dataViewRef = useRef(null)
     const exportOverPanelRef = useRef(null)
 
-    const exportColumns = options.templates.columns.map((col) => {
+    // ?BYPASS THE undefined
+    const exportColumns = options.templates.columns ? options.templates.columns.map((col) => {
         return { title: col.header, dataKey: col.field }
-    })
+    }) : []
 
     // ? LAYOUT REFACTORY: colocar no dataviewoptions com demais validações
     const supportedLayouts = ['grid', 'list', 'table']
@@ -59,9 +60,9 @@ const View = (props) => {
         { label: 30, value: 30 }
     ]
 
-    const [peerPageOptions] = useState(options?.pagination?.peerPageOptions.map(function (quantity) {
+    const [peerPageOptions] = useState(options.pagination.peerPageOptions ? options?.pagination?.peerPageOptions.map(function (quantity) {
         return { label: quantity, value: quantity }
-    }) || peerPageDefaultOptions)
+    }) : [])
 
     const [page, setPage] = useState(0)
     const [first, setFirst] = useState(0)
@@ -69,6 +70,7 @@ const View = (props) => {
     const [totalRecords, setTotalRecords] = useState(0)
 
     // *SORTS
+    const [sortKey, setSortKey] = useState('')
     const [sortField, setSortField] = useState(options?.sorts?.sortField || null)
     const [sortOrder, setSortOrder] = useState(options?.sorts?.sortOrder || 1)
 
@@ -80,6 +82,23 @@ const View = (props) => {
 
     // *DATAVIEW RESULTS
     const [results, setResults] = useState([])
+
+    // *RESPONSIVE
+    const lastDeviceSize = DataviewDeviceSize()
+    const [deviceSize, setDeviceSize] = useState(lastDeviceSize)
+    useEffect(() => {
+        // console.log('lastDeviceSize', lastDeviceSize)
+        if (typeof lastDeviceSize.width === 'number' && typeof lastDeviceSize.height === 'number' && options.responsive) {
+            // console.log('passei aqui')
+            setDeviceSize(lastDeviceSize)
+            DataviewResponsive((viewportLayout) => {
+                // console.log('viewportLayout', viewportLayout)
+                if (layout !== viewportLayout) {
+                    setLayout(viewportLayout)
+                }
+            }, options?.type, lastDeviceSize, options?.responsive)
+        }
+    }, [lastDeviceSize])
 
     // *FRESH THE COMPONENT
     const freshComponent = async () => {
@@ -133,7 +152,9 @@ const View = (props) => {
 
     // *SORT CALLBACK
     const onSortChange = (e) => {
+        console.log('event dela', e)
         if (options.onSortChange) options.onSortChange(e)
+        if (e.sortKey) setSortKey(e.sortKey)
         setSortField(e.sortField)
         setSortOrder(e.sortOrder)
     }
@@ -187,14 +208,19 @@ const View = (props) => {
     return (
         <div>
             {
-                console.log('results', results, 'first', first, 'rows', rows, 'total', totalRecords, 'options', options)
+                console.log('sortField', sortField, 'sortOrder', sortOrder)
+            }
+            {
+                console.log('sortKey', sortKey, 'layout', layout, 'device', deviceSize, 'results', results, 'first', first, 'rows', rows, 'total', totalRecords, 'options', options)
             }
             {
                 layout === 'grid' || layout === 'list' ? (
                     <>
                         <div className="card">
                             <DataView
+                                className='mdz-dataview-component'
                                 ref={dataViewRef}
+                                loading={loading}
                                 value={results}
                                 layout={layout}
                                 itemTemplate={itemTemplate}
@@ -205,7 +231,10 @@ const View = (props) => {
                                     onChangeLayout,
                                     globalFilterValue,
                                     onGlobalFilterChange,
-                                    options.export
+                                    options.export,
+                                    options.sorts,
+                                    sortKey,
+                                    onSortChange
                                 )}
                                 footer={footer(
                                     first,
@@ -221,6 +250,7 @@ const View = (props) => {
                 ) : (
                     <>
                         <DataTable
+                            className='mdz-datatable-component'
                             ref={dataTableRef}
                             loading={loading}
                             header={header(
@@ -233,13 +263,12 @@ const View = (props) => {
                                 options.export,
                                 dataTableRef,
                                 exportOverPanelRef,
-                                // ? REFACTORY: send empty data if export options is not present
                                 !options.export ? [] : results,
                                 exportColumns
                             )}
                             value={results}
                             filters={filters}
-                            exportFilename={options.export.fileName}
+                            exportFilename={!options.export ? '' : options.export.fileName}
                             globalFilterFields={getGlobalFiltersFields()}
                             filterDisplay="menu"
                             footer={footer(

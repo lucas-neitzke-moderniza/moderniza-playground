@@ -115,6 +115,10 @@ const optionsCard = {
         peerPage: 10,
         total: 0
     },
+    sorts: {
+        sortField: 'title',
+        sortOrder: 1
+    },
     onRequest: async (event) => {
         const response = await getData(event)
         const content = response.data.data
