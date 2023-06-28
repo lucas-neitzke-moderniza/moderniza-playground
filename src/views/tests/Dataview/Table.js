@@ -159,9 +159,9 @@ const optionsTable = {
     title: 'Artistas',
     type: 'table',
     templates: {
-        columns,
-        list,
-        grid
+        columns, // *table
+        list, // *list
+        grid // *grid
     },
     pagination: {
         page: 0,
@@ -172,9 +172,11 @@ const optionsTable = {
         sortField: 'title',
         sortOrder: 1,
         placeholder: 'Ordenar lista',
+        optionLabel: 'label',
+        className: 'test',
         sortOptions: [
             {
-                label: 'Score ascendente',
+                label: 'Menor score',
                 value: 'score_ascending',
                 sorts: {
                     sortOrder: 1,
@@ -182,7 +184,7 @@ const optionsTable = {
                 }
             },
             {
-                label: 'Score descendente',
+                label: 'Maior score',
                 value: 'score_descending',
                 sorts: {
                     sortOrder: -1,

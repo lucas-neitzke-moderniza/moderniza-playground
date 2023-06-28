@@ -21,7 +21,10 @@ class DataviewOptions {
      * @param {Object} options.sorts
      * @param {String|Null} options.sorts.sortField default: Null
      * @param {Number|Null} options.sorts.sortOrder 1 = ascending, -1 = descending, default: 1
-     * @param {{label: String, value: Any, sortOrder: Number, sortField: String}[]} options.sorts.sortOptions
+     * @param {String} options.sorts.placeholder sort dropdown placeholder
+     * @param {String} options.sorts.optionLabel sort dropdown optionLabel
+     * @param {String} options.sorts.className sort dropdown className
+     * @param {{label: String, value: Any, sorts: {sortOrder: Number, sortField: String}}[]} options.sorts.sortOptions
      * 
      * @param {Object} options.templates
      * @param {{header: String, field: String, sortable: Boolean, sortField: String,

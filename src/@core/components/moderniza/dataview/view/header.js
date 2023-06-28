@@ -152,7 +152,12 @@ const sortButton = (sorts, sortKey, onSortChange) => {
 
     return (
         <div className="flex">
-            <Dropdown options={getOptions(sorts.sortOptions)} value={sortKey} placeholder="Orderder por preço" optionLabel="label" onChange={(e) => {
+            <Dropdown
+                options={getOptions(sorts.sortOptions)}
+                value={sortKey}
+                placeholder="Orderder resultados"
+                optionLabel="label"
+                onChange={(e) => {
                 // console.log('event aq', e)
                 const actualState = getState(e.value, sorts.sortOptions)
                 // console.log('test', actualState)
@@ -161,7 +166,9 @@ const sortButton = (sorts, sortKey, onSortChange) => {
                     sortOrder: actualState.sorts.sortOrder,
                     sortKey: e.value
                 })
-            }} className="w-full sm:w-14rem" />
+            }}
+                className="w-full sm:w-14rem"
+            />
         </div>
     )
 }
