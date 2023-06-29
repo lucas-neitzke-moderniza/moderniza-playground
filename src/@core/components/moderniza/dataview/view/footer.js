@@ -1,29 +1,21 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react'
-import { DataTable } from 'primereact/datatable'
-import { Column } from 'primereact/column'
-import { InputText } from 'primereact/inputtext'
-import { Dropdown } from 'primereact/dropdown'
-import { InputNumber } from 'primereact/inputnumber'
-import { Button } from 'primereact/button'
-import { ProgressBar } from 'primereact/progressbar'
-import { Calendar } from 'primereact/calendar'
-import { MultiSelect } from 'primereact/multiselect'
-import { Slider } from 'primereact/slider'
-import { Tag } from 'primereact/tag'
-import { OverlayPanel } from 'primereact/overlaypanel'
-import { ProductService } from '../../../listing/service/ProductService'
-import { DataView, DataViewLayoutOptions } from 'primereact/dataview'
+import React from 'react'
 import { Paginator } from 'primereact/paginator'
+import paginatorLeft from './components/paginatorLeft'
+import paginatorRight from './components/paginatorRight'
 
-import paginatorLeft from './paginatorLeft'
-import paginatorRight from './paginatorRight'
-
-import 'primeflex/primeflex.css'
-import 'primereact/resources/themes/lara-light-indigo/theme.css'   // theme
-import 'primereact/resources/primereact.css'
-import 'primeicons/primeicons.css'
-
+/**
+ * Dataview footer view
+ * 
+ * @param {Number} first 
+ * @param {Number} rows 
+ * @param {Number} totalRecords 
+ * @param {Function} onPageChange 
+ * @param {Number[]} peerPageOptions 
+ * @param {Function} onChangePeerPageCallback 
+ * 
+ * @returns {JSX.Element}
+ */
 const footer = (first, rows, totalRecords, onPageChange, peerPageOptions, onChangePeerPageCallback) => {
     return (
         <>

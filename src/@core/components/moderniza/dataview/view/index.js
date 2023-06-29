@@ -40,8 +40,7 @@ const View = (props) => {
     const dataViewRef = useRef(null)
     const exportOverPanelRef = useRef(null)
 
-    // ?BYPASS THE undefined
-    const exportColumns = options.templates.columns ? options.templates.columns.map((col) => {
+    const exportColumns = options?.templates?.columns ? options.templates.columns.map((col) => {
         return { title: col.header, dataKey: col.field }
     }) : []
 
@@ -60,7 +59,7 @@ const View = (props) => {
         { label: 30, value: 30 }
     ]
 
-    const [peerPageOptions] = useState(options.pagination.peerPageOptions ? options?.pagination?.peerPageOptions.map(function (quantity) {
+    const [peerPageOptions] = useState(options?.pagination?.peerPageOptions ? options?.pagination?.peerPageOptions.map(function (quantity) {
         return { label: quantity, value: quantity }
     }) : [])
 
@@ -152,7 +151,7 @@ const View = (props) => {
 
     // *SORT CALLBACK
     const onSortChange = (e) => {
-        console.log('event dela', e)
+        // console.log('event dela', e)
         if (options.onSortChange) options.onSortChange(e)
         if (e.sortKey) setSortKey(e.sortKey)
         setSortField(e.sortField)
@@ -207,12 +206,12 @@ const View = (props) => {
 
     return (
         <div>
-            {
+            {/* {
                 console.log('sortField', sortField, 'sortOrder', sortOrder)
             }
             {
                 console.log('sortKey', sortKey, 'layout', layout, 'device', deviceSize, 'results', results, 'first', first, 'rows', rows, 'total', totalRecords, 'options', options)
-            }
+            } */}
             {
                 layout === 'grid' || layout === 'list' ? (
                     <>

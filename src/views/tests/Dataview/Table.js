@@ -42,7 +42,7 @@ const getData = async (event) => {
 
     try {
         const response = await axios.request(options)
-        console.log('response', response)
+        // console.log('response', response)
         return response
     } catch (error) {
         throw new Error(error.message)
@@ -168,6 +168,12 @@ const optionsTable = {
         peerPage: 5,
         peerPageOptions: [5, 10, 20, 30, 50]
     },
+    filters: {
+        global: { value: 'Jose', matchMode: FilterMatchMode.CONTAINS },
+        title: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.STARTS_WITH }] },
+        id: { operator: FilterOperator.OR, constraints: [{ value: '', matchMode: FilterMatchMode.EQUALS }] },
+        _score: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.GREATER_THAN }] }
+    },
     sorts: {
         sortField: 'title',
         sortOrder: 1,
@@ -193,12 +199,6 @@ const optionsTable = {
             }
         ]
     },
-    filters: {
-        global: { value: 'Jose', matchMode: FilterMatchMode.CONTAINS },
-        title: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.STARTS_WITH }] },
-        id: { operator: FilterOperator.OR, constraints: [{ value: '', matchMode: FilterMatchMode.EQUALS }] },
-        _score: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.GREATER_THAN }] }
-    },
     export: {
         extensions: ['xlsx', 'pdf', 'csv'],
         fileName: 'artists'
@@ -220,7 +220,7 @@ const optionsTable = {
         const content = response.data.data
         const total = response.data.pagination.total
 
-        console.log('aqui', content, total)
+        // console.log('aqui', content, total)
 
         return new DataviewRequestContent({
             content,

@@ -1,6 +1,6 @@
 import { useState, useLayoutEffect } from 'react'
 /**
- * 
+ * Get device demensions
  * @returns {{width: Number, height: Number }}
  */
 const DataviewDeviceSize = () => {
