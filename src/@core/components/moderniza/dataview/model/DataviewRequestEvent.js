@@ -1,6 +1,6 @@
 
 /**
- * Event parameter used in 'onRequest'
+ * Event emmited onRequest
  */
 class DataviewRequestEvent {
 

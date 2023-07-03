@@ -2,6 +2,7 @@ import { DataviewRequestEvent, DataviewRequestContent } from "../model"
 
 /**
  * Function that requests a async callback with state as parameter
+ * used as onRequest oeverride callback
  * 
  * @async
  * @param {Function} callback function that requests

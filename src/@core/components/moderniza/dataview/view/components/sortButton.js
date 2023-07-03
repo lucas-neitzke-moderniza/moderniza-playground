@@ -42,10 +42,10 @@ const sortButton = (sorts, sortKey, onSortChange) => {
             <Dropdown
                 options={getOptions(sorts.sortOptions)}
                 value={sortKey}
-                className={sorts?.className || 'w-full sm:w-14rem'}
-                style={sorts?.style || {}}
-                placeholder={sorts?.placeholder || 'Orderder resultados'}
-                optionLabel={sorts?.optionLabel || 'label'}
+                placeholder={sorts?.placeholder}
+                optionLabel={sorts?.optionLabel}
+                className={sorts?.className}
+                style={sorts?.style}
                 onChange={(e) => {
                     const actualState = getState(e.value, sorts.sortOptions)
                     onSortChange({

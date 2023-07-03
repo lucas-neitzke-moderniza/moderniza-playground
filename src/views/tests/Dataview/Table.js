@@ -114,10 +114,9 @@ const columns = [
         sortField: 'id',
         filter: true,
         filterField: 'id',
-        // filterElement: (options) => {
-        //     // console.log('options', options)
-        //     return <InputText value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
-        // },
+        filterElement: (options) => {
+            return <InputText value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
+        },
         body: (row) => {
             return <span className="text-2xl font-semibold">{row.id}</span>
         }
@@ -129,10 +128,9 @@ const columns = [
         sortField: 'title',
         filter: true,
         filterField: 'title',
-        // filterElement: (options) => {
-        //     // console.log('options', options)
-        //     return <InputText value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
-        // },
+        filterElement: (options) => {
+            return <InputText value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
+        },
         body: (row) => {
             return <span className="text-2xl font-semibold">{row.title}</span>
         }
@@ -145,10 +143,9 @@ const columns = [
         sortField: '_score',
         filter: true,
         filterField: '_score',
-        // filterElement: (options) => {
-        //     // console.log('options', options)
-        //     return <InputNumber value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
-        // },
+        filterElement: (options) => {
+            return <InputNumber value={options.value} onChange={() => options.filterCallback(options.value, options.index)} />
+        },
         body: (row) => {
             return <span className="text-2xl font-semibold">{row._score}</span>
         }
@@ -156,7 +153,7 @@ const columns = [
 ]
 
 const optionsTable = {
-    title: 'Artistas',
+    title: 'Artistas', //?optional
     type: 'table',
     templates: {
         columns, // *table
@@ -165,9 +162,9 @@ const optionsTable = {
     },
     pagination: {
         page: 0,
-        peerPage: 5,
-        peerPageOptions: [5, 10, 20, 30, 50]
+        peerPage: 5
     },
+    // TODO: Tratar filtro global
     filters: {
         global: { value: 'Jose', matchMode: FilterMatchMode.CONTAINS },
         title: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.STARTS_WITH }] },
@@ -177,9 +174,6 @@ const optionsTable = {
     sorts: {
         sortField: 'title',
         sortOrder: 1,
-        placeholder: 'Ordenar lista',
-        optionLabel: 'label',
-        className: 'test',
         sortOptions: [
             {
                 label: 'Menor score',
@@ -199,17 +193,28 @@ const optionsTable = {
             }
         ]
     },
+    // TODO: Botão adicionar
+    add: {
+        label: 'Novo',
+        icon: 'pi pi-plus',
+        severity: 'primary',
+        className: '',
+        style: {},
+        onClick: () => {
+            console.log('add')
+        }
+    },
     export: {
         extensions: ['xlsx', 'pdf', 'csv'],
         fileName: 'artists'
     },
     responsive: {
-        xs: 'grid',
-        sm: 'grid',
-        md: 'table',
-        lg: 'table',
-        xl: 'list',
-        xxl: 'grid'
+        xs: 'list',
+        sm: 'list',
+        md: 'grid',
+        lg: 'grid',
+        xl: 'table',
+        xxl: 'table'
     },
     /**
      * @param {DataviewRequestEvent} event

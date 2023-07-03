@@ -2,6 +2,7 @@
 
 /**
  * Change the layout when vieport changes
+ * 
  * @param {Function} callback 
  * @param {String} currentLayout 
  * @param {{width: Number, height: Number}} deviceSize 
@@ -10,10 +11,9 @@
  */
 const DataviewResponsive = (callback, currentLayout, deviceSize, optionsResponsive) => {
 
-    // console.log('deviceSize', deviceSize)
-    // console.log('optionsResponsive', optionsResponsive)
-
     /**
+     * Clean mode the handdle defaults
+     * 
      * @param {String} current 
      * @param {String} actual 
      * @returns {String}

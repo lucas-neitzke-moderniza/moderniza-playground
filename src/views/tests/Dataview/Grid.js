@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 /* eslint-disable no-unused-vars */
 // ** React Imports
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment } from 'react'
 
 import { Dataview } from '../../../@core/components/moderniza'
 import { DataviewRequestContent, DataviewOptions, DataviewRequestEvent } from '../../../@core/components/moderniza/dataview/model'

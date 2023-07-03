@@ -1,9 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import exportButton from './components/exportButton'
-import layoutButton from './components/layoutButton'
-import searchBar from './components/searchBar'
-import sortButton from './components/sortButton'
+import { exportButton, layoutButton, searchBar, sortButton, addButton } from './components'
 
 /**
  * Dataview header view
@@ -36,14 +33,17 @@ const header = (title, loading, layout, onChangeLayout, globalFilterValue, onGlo
                 searchBar(loading, globalFilterValue, onGlobalFilterChange)
             }
             {
-                // ?REFACTORY: options.export, valor padrao = false, caso undefined
-                optionsExport !== false && layout === 'table' ? exportButton(optionsExport, dataTableRefOrSorts, resultsOrOnSortChange, exportColumns, exportOverPanelRefOrSortKey) : ''
+                optionsExport && layout === 'table' ? exportButton(optionsExport, dataTableRefOrSorts, resultsOrOnSortChange, exportColumns, exportOverPanelRefOrSortKey) : ''
             }
             {
-                layout !== 'table' ? sortButton(dataTableRefOrSorts, exportOverPanelRefOrSortKey, resultsOrOnSortChange) : ''
+                layout !== 'table' && dataTableRefOrSorts.sortOptions ? sortButton(dataTableRefOrSorts, exportOverPanelRefOrSortKey, resultsOrOnSortChange) : ''
             }
             {
                 layout !== 'table' ? layoutButton(layout, onChangeLayout) : ''
+            }
+            {
+                // TODO: Botão adicionar
+                addButton()
             }
         </div>
     )

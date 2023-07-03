@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { DataView } from 'primereact/dataview'
@@ -13,12 +13,6 @@ import { header } from './header.js'
 
 // *FOOTER
 import { footer } from './footer.js'
-
-// *STYLES
-import 'primeflex/primeflex.css'
-import 'primereact/resources/themes/lara-light-indigo/theme.css'
-import 'primereact/resources/primereact.css'
-import 'primeicons/primeicons.css'
 
 /**
  * View component
@@ -44,9 +38,6 @@ const View = (props) => {
         return { title: col.header, dataKey: col.field }
     }) : []
 
-    // ? LAYOUT REFACTORY: colocar no dataviewoptions com demais validações
-    const supportedLayouts = ['grid', 'list', 'table']
-
     const [layout, setLayout] = useState(options.type)
     const [loading, setLoading] = useState(true)
     const [title, setTitle] = useState(options?.title || false)
@@ -59,9 +50,7 @@ const View = (props) => {
         { label: 30, value: 30 }
     ]
 
-    const [peerPageOptions] = useState(options?.pagination?.peerPageOptions ? options?.pagination?.peerPageOptions.map(function (quantity) {
-        return { label: quantity, value: quantity }
-    }) : [])
+    const [peerPageOptions] = useState(options?.pagination?.peerPageOptions)
 
     const [page, setPage] = useState(0)
     const [first, setFirst] = useState(0)
@@ -87,7 +76,9 @@ const View = (props) => {
     const [deviceSize, setDeviceSize] = useState(lastDeviceSize)
     useEffect(() => {
         // console.log('lastDeviceSize', lastDeviceSize)
-        if (typeof lastDeviceSize.width === 'number' && typeof lastDeviceSize.height === 'number' && options.responsive) {
+        if (typeof lastDeviceSize.width === 'number' &&
+            typeof lastDeviceSize.height === 'number' &&
+            options.responsive) {
             // console.log('passei aqui')
             setDeviceSize(lastDeviceSize)
             DataviewResponsive((viewportLayout) => {

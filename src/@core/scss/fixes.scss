@@ -8,3 +8,8 @@
 .mdz-dataview-component .p-dataview-footer, .mdz-datatable-component .p-datatable-footer {
     padding: 0 !important;
 }
+
+[dir] .dataview-custom-layout-button.p-selectbutton .p-button.p-highlight {
+    background: var(--bs-secondary) !important;
+    border-color: var(--bs-secondary) !important;
+}

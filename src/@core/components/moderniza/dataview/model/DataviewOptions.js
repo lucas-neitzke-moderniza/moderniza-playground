@@ -1,8 +1,8 @@
-import { Exception } from "sass"
+/* eslint-disable no-unused-vars */
 import { DataviewRequest } from "../controller"
 
 /**
- * Configuration of Dataview
+ * Dataview configuration
  */
 class DataviewOptions {
     /**
@@ -59,171 +59,759 @@ class DataviewOptions {
      */
     constructor(options) {
         try {
-            if (this.validate(options)) {
-                // *CONFIG
-                this.type = options.type
-                this.title = options.title
-                this.pagination = options.pagination
-                this.sorts = options.sorts
-                this.filters = options.filters
-                this.templates = options.templates
-                this.responsive = options.responsive
-                this.export = options.export
-                // *CALLBACKS
-                this.onRequest = options.onRequest
-                this.onPageChange = options.onPageChange
-                this.onSortChange = options.onSortChange
-                this.onFilterChange = options.onFilterChange
-                // ?FLAG: to do some verifications
-                this.build = true
-            }
+            if (this.validate(options)) this.dispatch(options)
         } catch (e) {
             /**
              * @type {Error}
              */
             const error = e
-            throw new Error(`Dataview Error: ${error.message}`)
+            console.table(error)
+            throw new Error(error.message)
         }
     }
 
     /**
      * Validate Dataview options
      * 
-     * @param {*} options 
+     * @param {DataviewOptions} options 
      * @returns {Boolean}
      */
     validate(options) {
-
-        console.log('options', options)
+        // console.log('options', options)
         const supportedLayouts = ['grid', 'list', 'table']
+        const supportedExtensions = ['csv', 'xlsx', 'pdf']
 
-        // *title
-        if (typeof options.title !== 'string') {
-            throw new Error('[options.title] must be typeof string')
+        // ?title (optional)
+        if (options.title) {
+            if (typeof options.title !== 'string') {
+                throw new Error('[options.title] must be typeof string')
+            }
         }
-
-        // *type
+        // !type (required)
         if (typeof options.type !== 'string') {
             throw new Error('[options.type] must be typeof string')
         }
-
-        // *type with supports
+        // !type with supports (required)
         if (!supportedLayouts.includes(options.type)) {
             throw new Error(`[options.type] must be one of: ${supportedLayouts.join(', ').trim()}`)
         }
+        // !pagination (required)
+        if (typeof options.pagination !== 'object') {
+            throw new Error('[options.pagination] must be typeof object')
+        }
+        // !pagination.page (required)
+        if (typeof options.pagination.page !== 'number') {
+            throw new Error('[options.pagination.page] must be typeof number')
+        }
+        // !pagination.peerPage (required)
+        if (typeof options.pagination.peerPage !== 'number') {
+            throw new Error('[options.pagination.peerPage] must be typeof number')
+        }
+        // ?pagination.peerPageOptions (optional)
+        if (options.pagination.peerPageOptions) {
+            if (!(options.pagination.peerPageOptions instanceof Array)) {
+                throw new Error('[options.pagination.peerPageOptions] must be typeof array')
+            }
+            // *pagination.peerPageOptions[]
+            options.pagination.peerPageOptions.forEach((value) => {
+                if (typeof value !== 'number') {
+                    throw new Error('[options.pagination.peerPageOptions] each value must be typeof number')
+                }
+            })
+        }
+        // ?filters (optional)
+        if (options.filters) {
+            // *filters
+            if (typeof options.filters !== 'object') {
+                throw new Error('[options.filters] must be typeof object')
+            }
+            // *filters.filter
+            Object.keys(options.filters).map((key, index) => {
+                const filter = options.filters[key]
 
-        // *templates
+                // ?filters.value (value+matchMode) (optional)
+                if (filter.value && filter.matchMode) {
+                    if (typeof filter.value !== 'string') {
+                        throw new Error(`[options.filters[${index}].value] must be typeof string`)
+                    }
+
+                    if (typeof filter.matchMode !== 'string') {
+                        throw new Error(`[options.filters[${index}].matchMode] must be typeof string`)
+                    }
+                } else if (filter.constraints && filter.operator) {
+                    // ?filters.filter.operator (operator+constraints)(optional)
+                    if (typeof filter.operator !== 'string') {
+                        throw new Error(`[options.filters[${index}].operator] must be typeof string`)
+                    }
+                    if (!(filter.constraints instanceof Array)) {
+                        throw new Error(`[options.filters[${index}].constraints] must be typeof array`)
+                    }
+                    // *filters.filter.constraints[]
+                    filter.constraints.forEach((constraint) => {
+                        // *filters.filter.constraints[item].value
+                        if (constraint.value) {
+                            if (typeof constraint.value !== 'string') {
+                                throw new Error(`[options.filters[${index}].constraints.value] must be typeof string`)
+                            }
+                        }
+                        // *filters.filter.constraints[item].matchMode
+                        if (constraint.matchMode) {
+                            if (typeof constraint.matchMode !== 'string') {
+                                throw new Error(`[options.filters[${index}].constraints.matchMode] must be typeof string`)
+                            }
+                        }
+                    })
+                } else {
+                    throw new Error(`[options.filters[${index}]] unknow filter combination
+                     (supported: {operator,constraints} or {value,matchMode})`)
+                }
+            })
+        }
+
+        // ?sorts (optional)
+        if (options.sorts) {
+            // *sorts
+            if (typeof options.sorts !== 'object') {
+                throw new Error('[options.sorts] must be typeof object')
+            }
+            // !sorts[].sortField (required)
+            if (typeof options.sorts.sortField !== 'string') {
+                throw new Error('[options.sorts.sortField] must be typeof string')
+            }
+            // !sorts[].sortOrder (required)
+            if (typeof options.sorts.sortOrder !== 'number') {
+                throw new Error('[options.sorts.sortOrder] must be typeof number')
+            }
+            // ?sorts[].placeholder (optional)
+            if (options.sorts.placeholder) {
+                if (typeof options.sorts.placeholder !== 'string') {
+                    throw new Error('[options.sorts.placeholder] must be typeof string')
+                }
+            }
+            // ?sorts[].optionLabel (optional)
+            if (options.sorts.optionLabel) {
+                if (typeof options.sorts.optionLabel !== 'string') {
+                    throw new Error('[options.sorts.optionLabel] must be typeof string')
+                }
+            }
+            // ?sorts[].className (optional)
+            if (options.sorts.className) {
+                if (typeof options.sorts.className !== 'string') {
+                    throw new Error('[options.sorts.className] must be typeof string')
+                }
+            }
+            // ?sorts[].style (optional)
+            if (options.sorts.style) {
+                if (typeof options.sorts.style !== 'object') {
+                    throw new Error('[options.sorts.style] must be typeof object')
+                }
+            }
+            // ?sorts[].sortOptions (optional)
+            if (options.sorts.sortOptions) {
+                if (!(options.sorts.sortOptions instanceof Array)) {
+                    throw new Error('[options.sorts.sortOptions] must be typeof array')
+                }
+                // *sorts[].sortOptions[]
+                options.sorts.sortOptions.forEach((sortOption, index) => {
+                    // !sorts[].sortOptions[].label (required)
+                    if (typeof sortOption.label !== 'string') {
+                        throw new Error(`[options.sorts.sortOptions[${index}].label] must be typeof string`)
+                    }
+                    // !sorts[].sortOptions[].value (required)
+                    if (typeof sortOption.value !== 'string') {
+                        throw new Error(`[options.sorts.sortOptions[${index}].value] must be typeof string`)
+                    }
+                    // !sorts[].sortOptions[].sorts.sortOrder (required)
+                    if (typeof sortOption.sorts.sortOrder !== 'number') {
+                        throw new Error(`[options.sorts.sortOptions[${index}].sorts.sortOrder] must be typeof number`)
+                    }
+                    // !sorts[].sortOptions[].sorts.sortField (required)
+                    if (typeof sortOption.sorts.sortField !== 'string') {
+                        throw new Error(`[options.sorts.sortOptions[${index}].sorts.sortField] must be typeof string`)
+                    }
+                })
+            }
+        }
+
+        // !templates (required)
         if (typeof options.templates !== 'object') {
             throw new Error('[options.templates] must be typeof object')
         }
 
-        // *templates.columns
-        if (!(options.templates.columns instanceof Array)) {
-            throw new Error('[options.templates.columns] must be typeof array')
-        }
-
-        // *templates.grid
-        if (typeof options.templates.grid !== 'function') {
-            throw new Error('[options.templates.grid] must be typeof function')
-        }
-
-        // *templates.list
-        if (typeof options.templates.list !== 'function') {
-            throw new Error('[options.templates.list] must be typeof function')
-        }
-
-        // *pagination
-        if (typeof options.pagination !== 'object') {
-            throw new Error('[options.pagination] must be typeof object')
-        }
-
-        // *pagination.page
-        if (typeof options.pagination.page !== 'number') {
-            throw new Error('[options.pagination.page] must be typeof number')
-        }
-
-        // *pagination.peerPage
-        if (typeof options.pagination.peerPage !== 'number') {
-            throw new Error('[options.pagination.peerPage] must be typeof number')
-        }
-
-        // *pagination.peerPageOptions
-        if (!(options.pagination.peerPageOptions instanceof Array)) {
-            throw new Error('[options.pagination.peerPageOptions] must be typeof array')
-        }
-
-        // *pagination.peerPageOptions each value
-        options.pagination.peerPageOptions.forEach((value) => {
-            if (typeof value !== 'number') {
-                throw new Error('[options.pagination.peerPageOptions] each value must be typeof number')
+        // ?templates.columns (optional)
+        if (options.templates.columns) {
+            // !templates.columns[] (required)
+            if (!(options.templates.columns instanceof Array)) {
+                throw new Error('[options.templates.columns] must be typeof array')
             }
-        })
-
-        // *filters
-        if (typeof options.pagination !== 'object') {
-            throw new Error('[options.filters] must be typeof object')
-        }
-
-        // *filters.filter
-        const filtersKeys = Object.keys(options.filters)
-        // console.log('keys', filtersKeys)
-        filtersKeys.map((key) => {
-            const filter = options.filters[key]
-            console.log('filter', filter)
-
-            // *filters.value
-            if (filter.value) {
-                if (typeof filter.value !== 'string') {
-                    throw new Error('[options.filters.value] must be typeof string')
+            // *templates.columns[]
+            options.templates.columns.map((column, index) => {
+                // !column.body (required)
+                if (typeof column.body !== 'function') {
+                    throw new Error(`[options.templates.columns[${index}].body] must be typeof function`)
                 }
-            }
-
-            // *filters.matchMode
-            if (filter.matchMode) {
-                if (typeof filter.matchMode !== 'string') {
-                    throw new Error('[options.filters.matchMode] must be typeof string')
+                // !column.filterField (required)
+                if (typeof column.header !== 'string') {
+                    throw new Error(`[options.templates.columns[${index}].header] must be typeof string`)
                 }
-            }
-
-            // *filters.filter.operator
-            if (filter.operator) {
-                if (typeof filter.operator !== 'string') {
-                    throw new Error('[options.filters.operator] must be typeof string')
+                // !column.filterField (required)
+                if (typeof column.field !== 'string') {
+                    throw new Error(`[options.templates.columns[${index}].field] must be typeof string`)
                 }
-            }
-
-            // *filters.filter.constraints
-            if (filter.constraints) {
-                if (!(filter.constraints instanceof Array)) {
-                    throw new Error('[options.filters.constraints] must be typeof array')
-                }
-            }
-
-            // *filters.filter.constraints[item]
-            if (filter.constraints) {
-                filter.constraints.forEach((constraint) => {
-
-                    // *filters.filter.constraints[item].value
-                    if (constraint.value) {
-                        if (typeof constraint.value !== 'string') {
-                            throw new Error('[options.filters.constraints.value] must be typeof string')
-                        }
+                // ?column.sortable (optional)
+                if (column.sortable) {
+                    if (typeof column.sortable !== 'boolean') {
+                        throw new Error(`[options.templates.columns[${index}].sortable] must be typeof boolean`)
                     }
-    
-                    // *filters.filter.constraints[item].matchMode
-                    if (constraint.matchMode) {
-                        if (typeof constraint.matchMode !== 'string') {
-                            throw new Error('[options.filters.constraints.matchMode] must be typeof string')
-                        }
+                }
+                // ?column.sortField (optional)
+                if (column.sortField) {
+                    if (typeof column.sortField !== 'string') {
+                        throw new Error(`[options.templates.columns[${index}].sortField] must be typeof string`)
+                    }
+                }
+                // ?column.filter (optional)
+                if (column.filter) {
+                    if (typeof column.filter !== 'boolean') {
+                        throw new Error(`[options.templates.columns[${index}].filter] must be typeof boolean`)
+                    }
+                }
+                // ?column.filterField (optional)
+                if (column.filterField) {
+                    if (typeof column.filterField !== 'string') {
+                        throw new Error(`[options.templates.columns[${index}].filterField] must be typeof string`)
+                    }
+                }
+                // ?column.filterField (optional)
+                if (column.filterElement) {
+                    if (typeof column.filterElement !== 'function') {
+                        throw new Error(`[options.templates.columns[${index}].filterElement] must be typeof function`)
+                    }
+                }
+            })
+        }
+        // *templates.grid
+        if (options.templates.grid) {
+            if (typeof options.templates.grid !== 'function') {
+                throw new Error('[options.templates.grid] must be typeof function')
+            }
+        }
+        // *templates.list
+        if (options.templates.list) {
+            if (typeof options.templates.list !== 'function') {
+                throw new Error('[options.templates.list] must be typeof function')
+            }
+        }
+
+        // ?responsive (optional)
+        if (options.responsive) {
+            if (typeof options.responsive !== 'object') {
+                throw new Error('[options.responsive] must be typeof object')
+            }
+            // ?responsive.sm (optional)
+            if (options.responsive.sm) {
+                if (typeof options.responsive.sm !== 'string') {
+                    throw new Error('[options.responsive.sm] must be typeof string')
+                }
+            }
+            // ?responsive.md (optional)
+            if (options.responsive.md) {
+                if (typeof options.responsive.md !== 'string') {
+                    throw new Error('[options.responsive.md] must be typeof string')
+                }
+            }
+
+            // ?responsive.lg (optional)
+            if (options.responsive.lg) {
+                if (typeof options.responsive.lg !== 'string') {
+                    throw new Error('[options.responsive.lg] must be typeof string')
+                }
+            }
+
+            // ?responsive.xl (optional)
+            if (options.responsive.xl) {
+                if (typeof options.responsive.xl !== 'string') {
+                    throw new Error('[options.responsive.xl] must be typeof string')
+                }
+            }
+
+            // ?responsive.xxl (optional)
+            if (options.responsive.xxl) {
+                if (typeof options.responsive.xxl !== 'string') {
+                    throw new Error('[options.responsive.xxl] must be typeof string')
+                }
+            }
+        }
+
+        // ?export (optional)
+        if (options.export) {
+            if (typeof options.export !== 'object') {
+                throw new Error('[options.export] must be typeof object')
+            }
+            // ?export.type (optional)
+            if (options.export.type) {
+                if (typeof options.export.type !== 'string') {
+                    throw new Error('[options.export.type] must be typeof string')
+                }
+            }
+            // ?export.size (optional)
+            if (options.export.size) {
+                if (typeof options.export.size !== 'string') {
+                    throw new Error('[options.export.size] must be typeof string')
+                }
+            }
+            // ?export.severity (optional)
+            if (options.export.severity) {
+                if (typeof options.export.severity !== 'string') {
+                    throw new Error('[options.export.severity] must be typeof string')
+                }
+            }
+            // ?export.icon (optional)
+            if (options.export.icon) {
+                if (typeof options.export.icon !== 'string') {
+                    throw new Error('[options.export.icon] must be typeof string')
+                }
+            }
+            // ?export.label (optional)
+            if (options.export.label) {
+                if (typeof options.export.label !== 'string') {
+                    throw new Error('[options.export.label] must be typeof string')
+                }
+            }
+            // ?export.extensions (optional)
+            if (options.export.extensions) {
+                if (!(options.export.extensions) instanceof Array) {
+                    throw new Error('[options.export.extensions] must be typeof array')
+                }
+                // *options.export.extensions[]
+                options.export.extensions.forEach((extension, index) => {
+                    // !extension (required)
+                    if (typeof extension !== 'string') {
+                        throw new Error(`[options.export.extensions[${index}]] must be typeof string`)
+                    }
+                    // !extensions with supported
+                    if (!supportedExtensions.includes(extension)) {
+                        throw new Error(`[options.export.extensions[${index}]] must be one of: ${supportedExtensions.join(', ').trim()}`)
                     }
                 })
             }
-        })
-
-        // *sorts
-
+            // ?export.xlsx (optional)
+            if (options.export.xlsx) {
+                if (typeof options.export.xlsx !== 'object') {
+                    throw new Error('[options.export.xlsx] must be typeof object')
+                }
+                // ?export.xlsx.type (optional)
+                if (options.export.xlsx.type) {
+                    if (typeof options.export.xlsx.type !== 'string') {
+                        throw new Error('[options.export.xlsx.type] must be typeof string')
+                    }
+                }
+                // ?export.xlsx.className (optional)
+                if (options.export.xlsx.className) {
+                    if (typeof options.export.xlsx.className !== 'string') {
+                        throw new Error('[options.export.xlsx.className] must be typeof string')
+                    }
+                }
+                // ?export.xlsx.size (optional)
+                if (options.export.xlsx.size) {
+                    if (typeof options.export.xlsx.size !== 'string') {
+                        throw new Error('[options.export.xlsx.size] must be typeof string')
+                    }
+                }
+                // ?export.xlsx.severity (optional)
+                if (options.export.xlsx.severity) {
+                    if (typeof options.export.xlsx.severity !== 'string') {
+                        throw new Error('[options.export.xlsx.severity] must be typeof string')
+                    }
+                }
+                // ?export.xlsx.label (optional)
+                if (options.export.xlsx.label) {
+                    if (typeof options.export.xlsx.label !== 'string') {
+                        throw new Error('[options.export.xlsx.label] must be typeof string')
+                    }
+                }
+                // ?export.xlsx.icon (optional)
+                if (options.export.xlsx.icon) {
+                    if (typeof options.export.xlsx.icon !== 'string') {
+                        throw new Error('[options.export.xlsx.icon] must be typeof string')
+                    }
+                }
+                // ?export.xlsx.style (optional)
+                if (options.export.xlsx.style) {
+                    if (typeof options.export.xlsx.style !== 'object') {
+                        throw new Error('[options.export.xlsx.style] must be typeof object')
+                    }
+                }
+            }
+            // ?export.csv (optional)
+            if (options.export.csv) {
+                if (typeof options.export.csv !== 'object') {
+                    throw new Error('[options.export.csv] must be typeof object')
+                }
+                // ?export.csv.type (optional)
+                if (options.export.csv.type) {
+                    if (typeof options.export.csv.type !== 'string') {
+                        throw new Error('[options.export.csv.type] must be typeof string')
+                    }
+                }
+                // ?export.csv.className (optional)
+                if (options.export.csv.className) {
+                    if (typeof options.export.csv.className !== 'string') {
+                        throw new Error('[options.export.csv.className] must be typeof string')
+                    }
+                }
+                // ?export.csv.size (optional)
+                if (options.export.csv.size) {
+                    if (typeof options.export.csv.size !== 'string') {
+                        throw new Error('[options.export.csv.size] must be typeof string')
+                    }
+                }
+                // ?export.csv.severity (optional)
+                if (options.export.csv.severity) {
+                    if (typeof options.export.csv.severity !== 'string') {
+                        throw new Error('[options.export.csv.severity] must be typeof string')
+                    }
+                }
+                // ?export.csv.label (optional)
+                if (options.export.csv.label) {
+                    if (typeof options.export.csv.label !== 'string') {
+                        throw new Error('[options.export.csv.label] must be typeof string')
+                    }
+                }
+                // ?export.csv.icon (optional)
+                if (options.export.csv.icon) {
+                    if (typeof options.export.csv.icon !== 'string') {
+                        throw new Error('[options.export.csv.icon] must be typeof string')
+                    }
+                }
+                // ?export.csv.style (optional)
+                if (options.export.csv.style) {
+                    if (typeof options.export.csv.style !== 'object') {
+                        throw new Error('[options.export.csv.style] must be typeof object')
+                    }
+                }
+            }
+            // ?export.pdf (optional)
+            if (options.export.pdf) {
+                if (typeof options.export.pdf !== 'object') {
+                    throw new Error('[options.export.pdf] must be typeof object')
+                }
+                // ?export.pdf.type (optional)
+                if (options.export.pdf.type) {
+                    if (typeof options.export.pdf.type !== 'string') {
+                        throw new Error('[options.export.pdf.type] must be typeof string')
+                    }
+                }
+                // ?export.pdf.className (optional)
+                if (options.export.pdf.className) {
+                    if (typeof options.export.pdf.className !== 'string') {
+                        throw new Error('[options.export.pdf.className] must be typeof string')
+                    }
+                }
+                // ?export.pdf.size (optional)
+                if (options.export.pdf.size) {
+                    if (typeof options.export.pdf.size !== 'string') {
+                        throw new Error('[options.export.pdf.size] must be typeof string')
+                    }
+                }
+                // ?export.pdf.severity (optional)
+                if (options.export.pdf.severity) {
+                    if (typeof options.export.pdf.severity !== 'string') {
+                        throw new Error('[options.export.pdf.severity] must be typeof string')
+                    }
+                }
+                // ?export.pdf.label (optional)
+                if (options.export.pdf.label) {
+                    if (typeof options.export.pdf.label !== 'string') {
+                        throw new Error('[options.export.pdf.label] must be typeof string')
+                    }
+                }
+                // ?export.pdf.icon (optional)
+                if (options.export.pdf.icon) {
+                    if (typeof options.export.pdf.icon !== 'string') {
+                        throw new Error('[options.export.pdf.icon] must be typeof string')
+                    }
+                }
+                // ?export.pdf.style (optional)
+                if (options.export.pdf.style) {
+                    if (typeof options.export.pdf.style !== 'object') {
+                        throw new Error('[options.export.pdf.style] must be typeof object')
+                    }
+                }
+            }
+        }
+        // !onRequest (required)
+        if (typeof options.onRequest !== 'function') {
+            throw new Error('[options.onRequest] must be typeof function')
+        }
+        // ?onPageChange (optional)
+        if (options.onPageChange) {
+            if (typeof options.onPageChange !== 'function') {
+                throw new Error('[options.onPageChange] must be typeof function')
+            }
+        }
+        // ?onSortChange (optional)
+        if (options.onSortChange) {
+            if (typeof options.onSortChange !== 'function') {
+                throw new Error('[options.onSortChange] must be typeof function')
+            }
+        }
+        // ?onFilterChange (optional)
+        if (options.onFilterChange) {
+            if (typeof options.onFilterChange !== 'function') {
+                throw new Error('[options.onFilterChange] must be typeof function')
+            }
+        }
         return true
 
+    }
+
+    /**
+     * Mixs the current options with defaults
+     * 
+     * @param {DataviewOptions} options 
+     * @returns {DataviewOptions}
+     */
+    defaults(options) {
+
+        const defaultSort = {
+            className: '',
+            placeholder: 'Ordenar resultados',
+            optionLabel: 'label',
+            style: { minWidth: '160px' }
+        }
+
+        const defaultPeerPageOptions = [5, 10, 20, 30, 40, 50]
+
+        const defaultExport = {
+            type: 'button',
+            className: '',
+            size: 'small',
+            severity: 'success',
+            icon: 'pi pi-file-export',
+            label: 'Exportar',
+            style: {},
+            fileName: 'export'
+        }
+
+        const defaultExportButtons = {
+            csv: {
+                type: 'button',
+                className: '',
+                size: 'small',
+                severity: 'secondary',
+                label: 'Arquivo (.csv)',
+                icon: 'pi pi-file',
+                style: { minWidth: '160px' }
+            },
+            pdf: {
+                type: 'button',
+                className: '',
+                size: 'small',
+                severity: 'primary',
+                label: 'Arquivo (.pdf)',
+                icon: 'pi pi-file-pdf',
+                style: { minWidth: '160px' }
+            },
+            xlsx: {
+                type: 'button',
+                className: '',
+                size: 'small',
+                severity: 'success',
+                label: 'Arquivo (.xlsx)',
+                icon: 'pi pi-file-excel',
+                style: { minWidth: '160px' }
+            }
+        }
+
+        // *DEFAULT SORTS
+        if (options.sorts) {
+            // *DEFAULT SORTS CLASSNAME
+            if (!options.sorts.className) {
+                options.sorts.className = defaultSort.className
+            }
+            // *DEFAULT SORTS PLACEHOLDER
+            if (!options.sorts.placeholder) {
+                options.sorts.placeholder = defaultSort.placeholder
+            }
+            // *DEFAULT SORTS OPTION LABEL
+            if (!options.sorts.optionLabel) {
+                options.sorts.optionLabel = defaultSort.optionLabel
+            }
+            // *DEFAULT SORTS STYLE
+            if (!options.sorts.style) {
+                options.sorts.style = defaultSort.style
+            }
+        }
+
+        // *DEFAULT PAGINATION
+        if (options.pagination) {
+            // *DEFAULT PAGINATION PEER PAGE OPTIONS
+            if (!options.pagination.peerPageOptions) {
+                options.pagination.peerPageOptions = defaultPeerPageOptions
+            }
+        }
+
+        // *DEFAULT EXPORT
+        if (options.export) {
+            // *DEFAULT FILENAME
+            if (!options.export.fileName) {
+                options.export.fileName = defaultExport.fileName
+            }
+            // *DEFAULT EXPORT TYPE
+            if (!options.export.type) {
+                options.export.type = defaultExport.type
+            }
+            // *DEFAULT EXPORT CLASSNAME
+            if (!options.export.className) {
+                options.export.className = defaultExport.className
+            }
+            // *DEFAULT EXPORT SIZE
+            if (!options.export.size) {
+                options.export.size = defaultExport.size
+            }
+            // *DEFAULT EXPORT SEVERITY
+            if (!options.export.severity) {
+                options.export.severity = defaultExport.severity
+            }
+            // *DEFAULT EXPORT ICON
+            if (!options.export.icon) {
+                options.export.icon = defaultExport.icon
+            }
+            // *DEFAULT EXPORT LABEL
+            if (!options.export.label) {
+                options.export.label = defaultExport.label
+            }
+            // *DEFAULT EXPORT STYLE
+            if (!options.export.style) {
+                options.export.style = defaultExport.style
+            }
+            // *DEFAULT EXPORT CSV
+            if (options.export.csv) {
+                // *export.csv.type
+                if (!options.export.csv.type) {
+                    options.export.csv.type = defaultExportButtons.csv.type
+                }
+                // *export.csv.className
+                if (!options.export.csv.className) {
+                    options.export.csv.className = defaultExportButtons.csv.className
+                }
+                // *export.csv.size
+                if (!options.export.csv.size) {
+                    options.export.csv.size = defaultExportButtons.csv.size
+                }
+                // *export.csv.severity
+                if (!options.export.csv.severity) {
+                    options.export.csv.severity = defaultExportButtons.csv.severity
+                }
+                // *export.csv.label
+                if (!options.export.csv.label) {
+                    options.export.csv.label = defaultExportButtons.csv.label
+                }
+                // *export.csv.icon
+                if (!options.export.csv.icon) {
+                    options.export.csv.icon = defaultExportButtons.csv.icon
+                }
+                // *export.csv.style
+                if (!options.export.csv.style) {
+                    options.export.csv.style = defaultExportButtons.csv.style
+                }
+            } else {
+                options.export.csv = defaultExportButtons.csv
+            }
+            // *DEFAULT EXPORT PDF
+            if (options.export.pdf) {
+                // *export.pdf.type
+                if (!options.export.pdf.type) {
+                    options.export.pdf.type = defaultExportButtons.pdf.type
+                }
+                // *export.pdf.className
+                if (!options.export.pdf.className) {
+                    options.export.pdf.className = defaultExportButtons.pdf.className
+                }
+                // *export.pdf.size
+                if (!options.export.pdf.size) {
+                    options.export.pdf.size = defaultExportButtons.pdf.size
+                }
+                // *export.pdf.severity
+                if (!options.export.pdf.severity) {
+                    options.export.pdf.severity = defaultExportButtons.pdf.severity
+                }
+                // *export.pdf.label
+                if (!options.export.pdf.label) {
+                    options.export.pdf.label = defaultExportButtons.pdf.label
+                }
+                // *export.pdf.icon
+                if (!options.export.pdf.icon) {
+                    options.export.pdf.icon = defaultExportButtons.pdf.icon
+                }
+                // *export.pdf.style
+                if (!options.export.pdf.style) {
+                    options.export.pdf.style = defaultExportButtons.pdf.style
+                }
+            } else {
+                options.export.pdf = defaultExportButtons.pdf
+            }
+            // *DEFAUL EXPORT XLSX
+            if (options.export.xlsx) {
+                // *export.xlsx.type
+                if (!options.export.xlsx.type) {
+                    options.export.xlsx.type = defaultExportButtons.xlsx.type
+                }
+                // *export.xlsx.className
+                if (!options.export.xlsx.className) {
+                    options.export.xlsx.className = defaultExportButtons.xlsx.className
+                }
+                // *export.xlsx.size
+                if (!options.export.xlsx.size) {
+                    options.export.xlsx.size = defaultExportButtons.xlsx.size
+                }
+                // *export.xlsx.severity
+                if (!options.export.xlsx.severity) {
+                    options.export.xlsx.severity = defaultExportButtons.xlsx.severity
+                }
+                // *export.xlsx.label
+                if (!options.export.xlsx.label) {
+                    options.export.xlsx.label = defaultExportButtons.xlsx.label
+                }
+                // *export.xlsx.icon
+                if (!options.export.xlsx.icon) {
+                    options.export.xlsx.icon = defaultExportButtons.xlsx.icon
+                }
+                // *export.xlsx.style
+                if (!options.export.xlsx.style) {
+                    options.export.xlsx.style = defaultExportButtons.xlsx.style
+                }
+            } else {
+                options.export.xlsx = defaultExportButtons.xlsx
+            }
+        }
+        return options
+    }
+
+    /**
+     * Dispatch the values
+     * @param {DataviewOptions} originalOptions 
+     */
+    dispatch(originalOptions) {
+        const options = this.defaults(originalOptions)
+        console.log('options optimized', options)
+        // *CONFIG
+        this.type = options.type
+        this.title = options.title
+        this.pagination = options.pagination
+        this.sorts = options.sorts
+        this.filters = options.filters
+        this.templates = options.templates
+        this.responsive = options.responsive
+        this.export = options.export
+        // *CALLBACKS
+        this.onRequest = options.onRequest
+        this.onPageChange = options.onPageChange
+        this.onSortChange = options.onSortChange
+        this.onFilterChange = options.onFilterChange
+        // !FLAG: only for read
+        this.build = true
     }
 
 }

@@ -1,12 +1,12 @@
 /**
- * Return of 'onRequest'
+ * onRequest return
  */
 class DataviewRequestContent {
     /**
      * 
      * @param {Object} options 
      * @param {Array} options.content
-     * @param {Int} options.total flag
+     * @param {Number} options.total flag
      */
     constructor(options) {
         this.content = options.content

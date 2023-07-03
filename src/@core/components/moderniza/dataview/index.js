@@ -9,6 +9,12 @@ import View from './view'
 // *Models
 import { DataviewOptions } from './model'
 
+// *STYLES
+import 'primeflex/primeflex.css'
+import 'primereact/resources/themes/lara-light-indigo/theme.css'
+import 'primereact/resources/primereact.css'
+import 'primeicons/primeicons.css'
+
 /**
  * Dataview component
  * 
@@ -24,9 +30,7 @@ const Dataview = (props) => {
 }
 
 Dataview.propTypes = {
-    /**
-     * Options of component
-     */
+    // *Options of component
     options: PropTypes.oneOfType([
         PropTypes.instanceOf(DataviewOptions),
         PropTypes.object

@@ -26,24 +26,26 @@ const exportButton = (optionsExport, dataTableRef, results, exportColumns, expor
     return (
         <div className="flex">
             <Button
-                type={optionsExport?.type || 'button'}
-                size={optionsExport?.size || 'small'}
-                severity={optionsExport?.severity || 'success'}
-                icon={optionsExport?.icon || 'pi pi-file-export'}
-                label={optionsExport?.label || 'Exportar'}
+                type={optionsExport?.type}
+                className={optionsExport?.className}
+                size={optionsExport?.size}
+                severity={optionsExport?.severity}
+                icon={optionsExport?.icon}
+                label={optionsExport?.label}
+                style={optionsExport?.style}
                 onClick={(e) => exportOverPanelRef.current.toggle(e)} />
             <OverlayPanel ref={exportOverPanelRef}>
                 {
-                    (optionsExport?.xlsx || extensions.includes('xlsx')) ? (
+                    (extensions.includes('xlsx')) ? (
                         <div className='mb-1'>
                             <Button
-                                type={optionsExport?.xlsx?.type || 'button'}
-                                className={optionsExport?.xlsx?.className || ''}
-                                size={optionsExport?.xlsx?.size || 'small'}
-                                severity={optionsExport?.xlsx?.severity || 'success'}
-                                label={optionsExport?.xlsx?.label || 'Planilha (.xlsx)'}
-                                icon={optionsExport?.xlsx?.icon || 'pi pi-file-excel'}
-                                style={optionsExport?.xlsx?.style || { minWidth: '160px' }}
+                                type={optionsExport?.xlsx?.type}
+                                className={optionsExport?.xlsx?.className}
+                                size={optionsExport?.xlsx?.size}
+                                severity={optionsExport?.xlsx?.severity}
+                                label={optionsExport?.xlsx?.label}
+                                icon={optionsExport?.xlsx?.icon}
+                                style={optionsExport?.xlsx?.style}
                                 onClick={() => {
                                     exportExcel(results, optionsExport?.fileName)
                                 }} />
@@ -51,16 +53,16 @@ const exportButton = (optionsExport, dataTableRef, results, exportColumns, expor
                     ) : ''
                 }
                 {
-                    (optionsExport?.pdf || extensions.includes('pdf')) ? (
+                    (extensions.includes('pdf')) ? (
                         <div className='mb-1'>
                             <Button
-                                type={optionsExport?.pdf?.type || 'button'}
-                                className={optionsExport?.pdf?.className || ''}
-                                size={optionsExport?.pdf?.size || 'small'}
-                                severity={optionsExport?.pdf?.severity || 'primary'}
-                                label={optionsExport?.pdf?.label || 'Documento (.pdf)'}
-                                icon={optionsExport?.pdf?.icon || 'pi pi-file-pdf'}
-                                style={optionsExport?.pdf?.style || { minWidth: '160px' }}
+                                type={optionsExport?.pdf?.type}
+                                className={optionsExport?.pdf?.className}
+                                size={optionsExport?.pdf?.size}
+                                severity={optionsExport?.pdf?.severity}
+                                label={optionsExport?.pdf?.label}
+                                icon={optionsExport?.pdf?.icon}
+                                style={optionsExport?.pdf?.style}
                                 onClick={() => {
                                     exportPdf(results, optionsExport?.fileName, exportColumns)
                                 }} />
@@ -68,16 +70,16 @@ const exportButton = (optionsExport, dataTableRef, results, exportColumns, expor
                     ) : ''
                 }
                 {
-                    (optionsExport?.csv || extensions.includes('csv')) ? (
+                    (extensions.includes('csv')) ? (
                         <div className='mb-1'>
                             <Button
-                                type={optionsExport?.csv?.type || 'button'}
-                                className={optionsExport?.csv?.className || ''}
-                                size={optionsExport?.csv?.size || 'small'}
-                                severity={optionsExport?.csv?.severity || 'secondary'}
-                                label={optionsExport?.csv?.label || 'Arquivo (.csv)'}
-                                icon={optionsExport?.csv?.icon || 'pi pi-file'}
-                                style={optionsExport?.csv?.style || { minWidth: '160px' }}
+                                type={optionsExport?.csv?.type}
+                                className={optionsExport?.csv?.className}
+                                size={optionsExport?.csv?.size}
+                                severity={optionsExport?.csv?.severity}
+                                label={optionsExport?.csv?.label}
+                                icon={optionsExport?.csv?.icon}
+                                style={optionsExport?.csv?.style}
                                 onClick={() => {
                                     exportCSV(dataTableRef, false)
                                 }} />

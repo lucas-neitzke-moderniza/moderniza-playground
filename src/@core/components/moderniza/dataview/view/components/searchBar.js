@@ -13,7 +13,7 @@ import { InputText } from "primereact/inputtext"
 const searchBar = (loading, globalFilterValue, onGlobalFilterChange) => {
     return (
         <div className='flex'>
-            <div className='flex me-1'>
+            <div className='flex'>
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
                     <InputText
