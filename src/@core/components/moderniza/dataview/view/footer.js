@@ -16,9 +16,9 @@ import paginatorRight from './components/paginatorRight'
  * 
  * @returns {JSX.Element}
  */
-const footer = (first, rows, totalRecords, onPageChange, peerPageOptions, onChangePeerPageCallback) => {
+const footer = (first, rows, totalRecords, onPageChange, peerPageOptions, onChangePeerPageCallback, optionsPagination) => {
     return (
-        <>
+        optionsPagination?.visible ? (
             <Paginator
                 first={first}
                 rows={rows}
@@ -27,7 +27,7 @@ const footer = (first, rows, totalRecords, onPageChange, peerPageOptions, onChan
                 rightContent={paginatorRight(rows, peerPageOptions, onChangePeerPageCallback)}
                 leftContent={paginatorLeft(totalRecords)}
             />
-        </>
+        ) : <></>
     )
 }
 

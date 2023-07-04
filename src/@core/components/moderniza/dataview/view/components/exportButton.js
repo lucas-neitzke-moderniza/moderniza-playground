@@ -24,7 +24,7 @@ const exportButton = (optionsExport, dataTableRef, results, exportColumns, expor
      */
     const extensions = optionsExport?.extensions
     return (
-        <div className="flex">
+        <div className="flex ms-1">
             <Button
                 type={optionsExport?.type}
                 className={optionsExport?.className}

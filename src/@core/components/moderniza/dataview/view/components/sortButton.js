@@ -38,7 +38,7 @@ const sortButton = (sorts, sortKey, onSortChange) => {
     }
 
     return (
-        <div className="flex">
+        <div className="flex flex-grow-1 ms-0 lg:ms-1">
             <Dropdown
                 options={getOptions(sorts.sortOptions)}
                 value={sortKey}

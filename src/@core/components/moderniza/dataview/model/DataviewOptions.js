@@ -8,6 +8,7 @@ class DataviewOptions {
     /**
      * @param {Object} options 
      * @param {String} options.type default: 'table'
+     * @param {String} options.height sets the component height
      * @param {String|Boolean} options.title default: false
      * 
      * @param {Object} options.pagination
@@ -19,6 +20,7 @@ class DataviewOptions {
      * value: String|Null, matchMode: String}}[]} options.filters primereact datatable api filters
      * 
      * @param {Object} options.sorts
+     * @param {Boolean} options.sorts.visible
      * @param {String|Null} options.sorts.sortField default: Null
      * @param {Number|Null} options.sorts.sortOrder 1 = ascending, -1 = descending, default: 1
      * @param {String} options.sorts.placeholder sort dropdown placeholder
@@ -36,7 +38,10 @@ class DataviewOptions {
      * 
      * @param {{xs: String, sm: String, lg: String, xl: String, xxl:String}} options.responsive
      * 
+     * @param {{label:String, icon: String, severity: String, className: String, style: Object, onClick: Function, visible: Boolean, size: String}} options.add Add header button
+     * 
      * @param {Object} options.export
+     * @param {Boolean} options.visible
      * @param {String} options.export.type custom export button type
      * @param {String} options.export.size custom export button size
      * @param {String} options.export.severity custom export button severity
@@ -107,6 +112,12 @@ class DataviewOptions {
         if (typeof options.pagination.peerPage !== 'number') {
             throw new Error('[options.pagination.peerPage] must be typeof number')
         }
+        // ?pagination.height (optional)
+        if (options.pagination.height) {
+            if (typeof options.pagination.height !== 'string') {
+                throw new Error('[options.pagination.height] must be typeof string')
+            }
+        }
         // ?pagination.peerPageOptions (optional)
         if (options.pagination.peerPageOptions) {
             if (!(options.pagination.peerPageOptions instanceof Array)) {
@@ -135,7 +146,7 @@ class DataviewOptions {
                         throw new Error(`[options.filters[${index}].value] must be typeof string`)
                     }
 
-                    if (typeof filter.matchMode !== 'string') {
+                    if (!(typeof filter.matchMode === 'string' || typeof filter.matchMode === 'function')) {
                         throw new Error(`[options.filters[${index}].matchMode] must be typeof string`)
                     }
                 } else if (filter.constraints && filter.operator) {
@@ -343,6 +354,60 @@ class DataviewOptions {
             }
         }
 
+        // ?add (optional)
+        if (options.add) {
+            if (typeof options.add !== 'object') {
+                throw new Error('[options.add] must be typeof object')
+            }
+            if (options.add.visible) {
+                if (typeof options.add.visible !== 'boolean') {
+                    throw new Error('[options.add.visible] must be typeof boolean')
+                }
+            }
+            // ?add.label (optional)
+            if (options.add.label) {
+                if (typeof options.add.label !== 'string') {
+                    throw new Error('[options.add.label] must be typeof string')
+                }
+            }
+            // ?add.icon (optional)
+            // ?add.size (optional)
+            if (options.add.size) {
+                if (typeof options.add.size !== 'string') {
+                    throw new Error('[options.add.size] must be typeof string')
+                }
+            }
+            if (options.add.icon) {
+                if (typeof options.add.icon !== 'string') {
+                    throw new Error('[options.add.icon] must be typeof string')
+                }
+            }
+            // ?add.severity (optional)
+            if (options.add.severity) {
+                if (typeof options.add.severity !== 'string') {
+                    throw new Error('[options.add.severity] must be typeof string')
+                }
+            }
+            // ?add.className (optional)
+            if (options.add.className) {
+                if (typeof options.add.className !== 'string') {
+                    throw new Error('[options.add.className] must be typeof string')
+                }
+            }
+            // ?add.style (optional)
+            if (options.add.style) {
+                if (typeof options.add.style !== 'object') {
+                    throw new Error('[options.add.style] must be typeof object')
+                }
+            }
+            // ?add.onClick (optional)
+            if (options.add.onClick) {
+                if (typeof options.add.onClick !== 'function') {
+                    throw new Error('[options.add.onClick] must be typeof function')
+                }
+            }
+        }
+
         // ?export (optional)
         if (options.export) {
             if (typeof options.export !== 'object') {
@@ -391,7 +456,8 @@ class DataviewOptions {
                     }
                     // !extensions with supported
                     if (!supportedExtensions.includes(extension)) {
-                        throw new Error(`[options.export.extensions[${index}]] must be one of: ${supportedExtensions.join(', ').trim()}`)
+                        throw new Error(`[options.export.extensions[${index}]] must be one of: 
+                        ${supportedExtensions.join(', ').trim()}`)
                     }
                 })
             }
@@ -575,15 +641,17 @@ class DataviewOptions {
     defaults(options) {
 
         const defaultSort = {
+            visible: true,
             className: '',
             placeholder: 'Ordenar resultados',
             optionLabel: 'label',
-            style: { minWidth: '160px' }
+            style: { minWidth: '100%' }
         }
 
         const defaultPeerPageOptions = [5, 10, 20, 30, 40, 50]
 
         const defaultExport = {
+            visible: true,
             type: 'button',
             className: '',
             size: 'small',
@@ -624,6 +692,21 @@ class DataviewOptions {
             }
         }
 
+        const defaultAddButton = {
+            visible: true,
+            label: 'Novo',
+            icon: 'pi pi-plus',
+            size: 'small',
+            severity: 'primary',
+            className: '',
+            style: {}
+        }
+
+        // *DEFAULT HEIGHT
+        if (!options.height) {
+            options.height = '75vh'
+        }
+
         // *DEFAULT SORTS
         if (options.sorts) {
             // *DEFAULT SORTS CLASSNAME
@@ -652,8 +735,46 @@ class DataviewOptions {
             }
         }
 
+        // *DEFAULT ADD BUTTON
+        if (options.add) {
+            // *DEFAULT ADD BUTTON VISIBLE
+            if (!options.add.visible) {
+                options.add.visible = defaultAddButton.visible
+            }
+            // *DEFAULT ADD BUTTON LABEL
+            if (!options.add.label) {
+                options.add.label = defaultAddButton.label
+            }
+            // *DEFAULT ADD BUTTON ICON
+            if (!options.add.icon) {
+                options.add.icon = defaultAddButton.icon
+            }
+            // *DEFAULT ADD BUTTON SIZE
+            if (!options.add.size) {
+                options.add.size = defaultAddButton.size
+            }
+            // *DEFAULT ADD BUTTON SEVERITY
+            if (!options.add.severity) {
+                options.add.severity = defaultAddButton.severity
+            }
+            // *DEFAULT ADD BUTTON CLASSNAME
+            if (!options.add.className) {
+                options.add.className = defaultAddButton.className
+            }
+            // *DEFAULT ADD BUTTON STYLE
+            if (!options.add.style) {
+                options.add.style = defaultAddButton.style
+            }
+        } else {
+            options.add = defaultAddButton
+        }
+
         // *DEFAULT EXPORT
         if (options.export) {
+            // *DEFAULT EXPORT VISIBLE
+            if (!options.export.visible) {
+                options.export.visible = defaultExport.visible
+            }
             // *DEFAULT FILENAME
             if (!options.export.fileName) {
                 options.export.fileName = defaultExport.fileName
@@ -799,11 +920,13 @@ class DataviewOptions {
         // *CONFIG
         this.type = options.type
         this.title = options.title
+        this.height = options.height
         this.pagination = options.pagination
         this.sorts = options.sorts
         this.filters = options.filters
         this.templates = options.templates
         this.responsive = options.responsive
+        this.add = options.add
         this.export = options.export
         // *CALLBACKS
         this.onRequest = options.onRequest

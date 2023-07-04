@@ -36,19 +36,15 @@ const AppRoutes = [
     element: <TestDataViewGrid />,
     path: '/tests/dataview/grid',
     meta: {
-      appLayout: true,
       className: 'test-application'
-    },
-    footerType: 'hidden'
+    }
   },
   {
     element: <TestDataViewTable />,
     path: '/tests/dataview/table',
     meta: {
-      appLayout: true,
       className: 'test-application'
-    },
-    footerType: 'hidden'
+    }
   },
   {
     element: <Email />,

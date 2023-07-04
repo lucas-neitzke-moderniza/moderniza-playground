@@ -57,23 +57,25 @@ const getSeverity = () => {
 const list = (row) => {
     return (
         <div className="col-12">
-            <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-                <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={'https://picsum.photos/200'} alt={row.title} />
-                <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                    <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                        <div className="text-2xl font-bold text-900">{row.title}</div>
-                        <Rating value={row.rating} readOnly cancel={false}></Rating>
-                        <div className="flex align-items-center gap-3">
-                            <span className="flex align-items-center gap-2">
-                                <i className="pi pi-tag"></i>
-                                <span className="font-semibold">{row.category}</span>
-                            </span>
-                            <Tag value={row.inventoryStatus} severity={getSeverity()}>Teste</Tag>
+            <div className='border-1 surface-border surface-card border-round'>
+                <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
+                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={'https://picsum.photos/200'} alt={row.title} />
+                    <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                        <div className="flex flex-column align-items-center sm:align-items-start gap-3">
+                            <div className="text-2xl font-bold text-900">{row.title}</div>
+                            <Rating value={row.rating} readOnly cancel={false}></Rating>
+                            <div className="flex align-items-center gap-3">
+                                <span className="flex align-items-center gap-2">
+                                    <i className="pi pi-tag"></i>
+                                    <span className="font-semibold">{row.category}</span>
+                                </span>
+                                <Tag value={row.inventoryStatus} severity={getSeverity()}>Teste</Tag>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                        <span className="text-2xl font-semibold">${row.price}</span>
-                        <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={row.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                        <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                            <span className="text-2xl font-semibold">${row.price}</span>
+                            <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={row.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -152,19 +154,24 @@ const columns = [
     }
 ]
 
+const customFilter = (value, rowData) => {
+    return value
+}
+
 const optionsTable = {
-    title: 'Artistas', //?optional
+    title: 'Listagem de Artistas', //?optional
     type: 'table',
+    height: 'calc(100vh - 130px)',
     templates: {
         columns, // *table
         list, // *list
         grid // *grid
     },
     pagination: {
+        visible: true,
         page: 0,
-        peerPage: 5
+        peerPage: 20
     },
-    // TODO: Tratar filtro global
     filters: {
         global: { value: 'Jose', matchMode: FilterMatchMode.CONTAINS },
         title: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.STARTS_WITH }] },
@@ -172,6 +179,7 @@ const optionsTable = {
         _score: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.GREATER_THAN }] }
     },
     sorts: {
+        visible: true,
         sortField: 'title',
         sortOrder: 1,
         sortOptions: [
@@ -195,16 +203,18 @@ const optionsTable = {
     },
     // TODO: Botão adicionar
     add: {
-        label: 'Novo',
-        icon: 'pi pi-plus',
-        severity: 'primary',
-        className: '',
-        style: {},
-        onClick: () => {
-            console.log('add')
-        }
+        // visible: true
+        // label: 'Novo',
+        // icon: 'pi pi-plus',
+        // severity: 'primary',
+        // className: '',
+        // style: {},
+        // onClick: (e) => {
+        //     console.log('add event', e)
+        // }
     },
     export: {
+        // visible: true,
         extensions: ['xlsx', 'pdf', 'csv'],
         fileName: 'artists'
     },

@@ -12,9 +12,12 @@ import { InputText } from "primereact/inputtext"
  */
 const searchBar = (loading, globalFilterValue, onGlobalFilterChange) => {
     return (
-        <div className='flex'>
-            <div className='flex'>
-                <span className="p-input-icon-left">
+        <div className='flex flex-grow-1 me-0 me-lg-1'>
+            <div className='flex flex-grow-1'>
+                <span className="p-input-icon-left"
+                    style={{
+                        width: '100%'
+                    }}>
                     <i className="pi pi-search" />
                     <InputText
                         disabled={loading}
@@ -22,7 +25,7 @@ const searchBar = (loading, globalFilterValue, onGlobalFilterChange) => {
                         onChange={onGlobalFilterChange}
                         placeholder='Pesquise por qualquer campo...'
                         style={{
-                            minWidth: '300px'
+                            width: '100%'
                         }}
                     />
                 </span>

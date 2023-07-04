@@ -206,36 +206,38 @@ const View = (props) => {
             {
                 layout === 'grid' || layout === 'list' ? (
                     <>
-                        <div className="card">
-                            <DataView
-                                className='mdz-dataview-component'
-                                ref={dataViewRef}
-                                loading={loading}
-                                value={results}
-                                layout={layout}
-                                itemTemplate={itemTemplate}
-                                header={header(
-                                    title,
-                                    loading,
-                                    layout,
-                                    onChangeLayout,
-                                    globalFilterValue,
-                                    onGlobalFilterChange,
-                                    options.export,
-                                    options.sorts,
-                                    sortKey,
-                                    onSortChange
-                                )}
-                                footer={footer(
-                                    first,
-                                    rows,
-                                    totalRecords,
-                                    onPageChange,
-                                    peerPageOptions,
-                                    onChangePeerPageCallback
-                                )}
-                            />
-                        </div>
+                        <DataView
+                            className='mdz-dataview-component'
+                            ref={dataViewRef}
+                            loading={loading}
+                            value={results}
+                            layout={layout}
+                            itemTemplate={itemTemplate}
+                            header={header(
+                                title,
+                                loading,
+                                layout,
+                                onChangeLayout,
+                                globalFilterValue,
+                                onGlobalFilterChange,
+                                options.export,
+                                options.sorts,
+                                sortKey,
+                                onSortChange,
+                                undefined,
+                                options.sorts,
+                                options.add
+                            )}
+                            footer={footer(
+                                first,
+                                rows,
+                                totalRecords,
+                                onPageChange,
+                                peerPageOptions,
+                                onChangePeerPageCallback,
+                                options.pagination
+                            )}
+                        />
                     </>
                 ) : (
                     <>
@@ -254,7 +256,9 @@ const View = (props) => {
                                 dataTableRef,
                                 exportOverPanelRef,
                                 !options.export ? [] : results,
-                                exportColumns
+                                exportColumns,
+                                options.sorts,
+                                options.add
                             )}
                             value={results}
                             filters={filters}
@@ -267,7 +271,8 @@ const View = (props) => {
                                 totalRecords,
                                 onPageChange,
                                 peerPageOptions,
-                                onChangePeerPageCallback
+                                onChangePeerPageCallback,
+                                options.pagination
                             )}
                             onSort={onSortChange}
                             onFilter={onFilterChange}
@@ -291,6 +296,9 @@ const View = (props) => {
                         </DataTable>
                     </>
                 )
+            }
+            {
+                <style>{`.mdz-datatable-component, .mdz-dataview-component{height: ${options?.height} !important;}`}</style>
             }
         </div>
     )
