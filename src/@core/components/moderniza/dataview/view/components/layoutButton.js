@@ -10,7 +10,7 @@ import { Button } from "primereact/button"
  * 
  * @returns {JSX.Element}
  */
-const layoutButton = (layout, callback) => {
+const layoutButton = (layout, callback, deviceSize) => {
 
     const items = [
         { icon: 'pi pi-th-large', value: 'grid' },
@@ -19,24 +19,26 @@ const layoutButton = (layout, callback) => {
     ]
 
     return (
-        <div class="flex m-auto">
+        <>
             <div className="p-buttonset">
                 {
                     items.map((item, index) => {
-                        return (
-                            <Button
-                                key={index}
-                                size='small'
-                                severity="primary"
-                                icon={item.icon}
-                                outlined={item.value !== layout}
-                                onClick={() => callback(item.value)}
-                            />
-                        )
+                        if (!(item.value === 'table' && deviceSize.width < 575.98)) {
+                            return (
+                                <Button
+                                    key={index}
+                                    size='small'
+                                    severity="primary"
+                                    icon={item.icon}
+                                    outlined={item.value !== layout}
+                                    onClick={() => callback(item.value)}
+                                />
+                            )
+                        }
                     })
                 }
             </div>
-        </div>
+        </>
     )
 }
 

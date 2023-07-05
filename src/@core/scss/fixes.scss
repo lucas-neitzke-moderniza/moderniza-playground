@@ -1,6 +1,9 @@
 .mdz-dataview-component .p-dataview-footer,
-.mdz-datatable-component .p-datatable-footer {
-    padding: 0 !important;
+.mdz-datatable-component .p-datatable-footer, 
+.mdz-dataview-component .p-dataview-header,
+.mdz-datatable-component .p-datatable-header {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 
 .mdz-dataview-component .p-dataview-header, .mdz-datatable-component .p-datatable-header {
@@ -15,7 +18,7 @@
     width: 100%;
     top: 73px;
     position: absolute;
-    height: calc(100% - 135px);
+    height: calc(100% - 165px);
 }
 
 .mdz-dataview-component .p-dataview-content{
@@ -37,14 +40,20 @@
     background: transparent !important;
 }
 
-@media (max-width:1024px){
+.mdz-dataview-component.p-dataview-grid .p-grid.grid.p-nogutter.grid-nogutter {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x) * -.5);
+    margin-left: calc(var(--bs-gutter-x) * -.5);
+}
+
+@media (max-width:991.98px){
     .mdz-dataview-component .p-dataview-header{
-        height: 123px !important;;
+        height: 130px !important;
     }
     .mdz-dataview-component .p-dataview-content, .mdz-datatable-component .p-datatable-wrapper{
-        top: 123px !important
-    }
-    .header-bottom-content{
-        width: 100% !important;
+        top: 130px !important;
+        height: calc(100% - 215px) !important;
     }
 }

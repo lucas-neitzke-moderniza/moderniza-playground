@@ -1,5 +1,7 @@
-import React from 'react'
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect, useRef } from 'react'
 import { Dropdown } from "primereact/dropdown"
+import { DataviewDeviceSize } from '../../controller'
 
 /**
  * Dataview header sort button
@@ -10,8 +12,17 @@ import { Dropdown } from "primereact/dropdown"
  * 
  * @returns {JSX.Element}
  */
-const sortButton = (sorts, sortKey, onSortChange) => {
-    // console.log('sortOptions', sortOptions, 'sortKey', sortKey, 'onSortChange', onSortChange)
+const sortButton = (sorts, sortKey, onSortChange, deviceSize) => {
+
+    console.log('device sort', deviceSize)
+
+    const getLabel = (value) => {
+        if (deviceSize.width <= 480) {
+            return 'Ordenar'
+        } else {
+            return value
+        }
+    }
 
     /**
      * 
@@ -38,11 +49,11 @@ const sortButton = (sorts, sortKey, onSortChange) => {
     }
 
     return (
-        <div className="flex flex-grow-1 ms-0 lg:ms-1">
+        <>
             <Dropdown
                 options={getOptions(sorts.sortOptions)}
                 value={sortKey}
-                placeholder={sorts?.placeholder}
+                placeholder={getLabel(sorts?.placeholder)}
                 optionLabel={sorts?.optionLabel}
                 className={sorts?.className}
                 style={sorts?.style}
@@ -55,7 +66,7 @@ const sortButton = (sorts, sortKey, onSortChange) => {
                     })
                 }}
             />
-        </div>
+        </>
     )
 }
 

@@ -27,6 +27,7 @@ const View = (props) => {
      * @type {DataviewOptions}
      */
     const options = props.options.build ? props.options : new DataviewOptions(props.options)
+    console.log('options', options)
     const templates = options.templates
 
     // *REFERENCES
@@ -226,7 +227,8 @@ const View = (props) => {
                                 onSortChange,
                                 undefined,
                                 options.sorts,
-                                options.add
+                                options.add,
+                                lastDeviceSize
                             )}
                             footer={footer(
                                 first,
@@ -235,7 +237,8 @@ const View = (props) => {
                                 onPageChange,
                                 peerPageOptions,
                                 onChangePeerPageCallback,
-                                options.pagination
+                                options.pagination,
+                                deviceSize
                             )}
                         />
                     </>
@@ -258,7 +261,8 @@ const View = (props) => {
                                 !options.export ? [] : results,
                                 exportColumns,
                                 options.sorts,
-                                options.add
+                                options.add,
+                                lastDeviceSize
                             )}
                             value={results}
                             filters={filters}
@@ -272,7 +276,8 @@ const View = (props) => {
                                 onPageChange,
                                 peerPageOptions,
                                 onChangePeerPageCallback,
-                                options.pagination
+                                options.pagination,
+                                deviceSize
                             )}
                             onSort={onSortChange}
                             onFilter={onFilterChange}

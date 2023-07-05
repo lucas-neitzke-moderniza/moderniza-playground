@@ -18,6 +18,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Dataview } from '../../../@core/components/moderniza'
 
 import { DataviewRequestContent, DataviewOptions, DataviewRequestEvent } from '../../../@core/components/moderniza/dataview/model'
+import { Row, Col, Card, CardBody, CardText, CardTitle, CardSubtitle } from 'reactstrap'
 
 /**
  * @param {DataviewRequestEvent} event
@@ -56,55 +57,41 @@ const getSeverity = () => {
 
 const list = (row) => {
     return (
-        <div className="col-12">
-            <div className='border-1 surface-border surface-card border-round'>
-                <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={'https://picsum.photos/200'} alt={row.title} />
-                    <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                        <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                            <div className="text-2xl font-bold text-900">{row.title}</div>
-                            <Rating value={row.rating} readOnly cancel={false}></Rating>
-                            <div className="flex align-items-center gap-3">
-                                <span className="flex align-items-center gap-2">
-                                    <i className="pi pi-tag"></i>
-                                    <span className="font-semibold">{row.category}</span>
-                                </span>
-                                <Tag value={row.inventoryStatus} severity={getSeverity()}>Teste</Tag>
-                            </div>
-                        </div>
-                        <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                            <span className="text-2xl font-semibold">${row.price}</span>
-                            <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={row.inventoryStatus === 'OUTOFSTOCK'}></Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Card className="mb-0 p-1">
+            <Row>
+                <Col xs="auto" className="my-auto">
+                    <img className="w-9 shadow-2 rounded-circle" src={'https://picsum.photos/200'} alt={row.title} style={{ height: '50px' }} />
+                </Col>
+                <Col className="my-auto">
+                    <h2>Title</h2>
+                    <p>{row.title}</p>
+                </Col>
+                <Col className="my-auto">
+                    <h2>Score</h2>
+                    <p>{row._score}</p>
+                </Col>
+            </Row>
+        </Card>
     )
 }
 
 const grid = (row) => {
     return (
-        <div className="col-12 sm:col-6 lg:col-4 xl:col-4 p-2">
-            <div className="p-4 border-1 surface-border surface-card border-round">
-                <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-                    <div className="flex align-items-center gap-2">
-                        <i className="pi pi-tag"></i>
-                        <span className="font-semibold">{row.category}</span>
-                    </div>
-                    <Tag value={row.inventoryStatus} severity={getSeverity()}>Teste</Tag>
-                </div>
-                <div className="flex flex-column align-items-center gap-3 py-5">
-                    <img className="w-9 shadow-2 border-round" src={'https://picsum.photos/200'} alt={row.title} />
-                    <div className="text-2xl font-bold">{row.title}</div>
-                    <Rating value={row.rating} readOnly cancel={false}></Rating>
-                </div>
-                <div className="flex align-items-center justify-content-between">
-                    <span className="text-2xl font-semibold">${row.price}</span>
-                    <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={row.inventoryStatus === 'OUTOFSTOCK'}></Button>
-                </div>
-            </div>
-        </div>
+        <Col xs="12" md="6" lg="4" className="p-1">
+            <Card className="mb-0">
+                <CardBody>
+                    <CardTitle tag="h5">{row.title}</CardTitle>
+                    <CardSubtitle
+                        className="mb-0 text-muted"
+                        tag="h6"
+                    >{row.api_model}</CardSubtitle>
+                </CardBody>
+                <img src={'https://picsum.photos/200'} alt={row.title} />
+                <CardBody>
+                    <CardText>Score: {row._score}</CardText>
+                </CardBody>
+            </Card>
+        </Col>
     )
 }
 
@@ -159,8 +146,8 @@ const customFilter = (value, rowData) => {
 }
 
 const optionsTable = {
-    title: 'Listagem de Artistas', //?optional
-    type: 'table',
+    title: 'Listagem de artistas', //?optional
+    type: 'list',
     height: 'calc(100vh - 130px)',
     templates: {
         columns, // *table
@@ -170,7 +157,7 @@ const optionsTable = {
     pagination: {
         visible: true,
         page: 0,
-        peerPage: 20
+        peerPage: 30
     },
     filters: {
         global: { value: 'Jose', matchMode: FilterMatchMode.CONTAINS },
@@ -219,10 +206,10 @@ const optionsTable = {
         fileName: 'artists'
     },
     responsive: {
-        xs: 'list',
-        sm: 'list',
-        md: 'grid',
-        lg: 'grid',
+        xs: 'grid',
+        sm: 'grid',
+        md: 'list',
+        lg: 'list',
         xl: 'table',
         xxl: 'table'
     },

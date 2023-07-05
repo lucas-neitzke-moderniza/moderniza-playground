@@ -8,22 +8,9 @@ export default [
    // !DATAVIEWTABLE
   {
     id: 'dataviewtable',
-    title: 'Dataview table',
+    title: 'Dataview',
     icon: <Table size={20} />,
     navLink: '/tests/dataview/table'
-  },
-  // !DATAVIEWGRID
-  {
-    id: 'dataviewgrid',
-    title: 'Dataview grid',
-    icon: <Grid size={20} />,
-    navLink: '/tests/dataview/grid'
-  },
-  {
-    id: 'listing',
-    title: 'Listing',
-    icon: <List size={20} />,
-    navLink: '/tests/listing'
   },
   {
     id: 'email',

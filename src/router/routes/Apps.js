@@ -25,20 +25,10 @@ const UserView = lazy(() => import('../../views/apps/user/view'))
 const Roles = lazy(() => import('../../views/apps/roles-permissions/roles'))
 const Permissions = lazy(() => import('../../views/apps/roles-permissions/permissions'))
 
-// *Rota de testes estavel do table
-const TestDataViewGrid = lazy(() => import('../../views/tests/Dataview/Grid'))
-
 // *Rota de testes estavel do view
 const TestDataViewTable = lazy(() => import('../../views/tests/Dataview/Table'))
 
 const AppRoutes = [
-  {
-    element: <TestDataViewGrid />,
-    path: '/tests/dataview/grid',
-    meta: {
-      className: 'test-application'
-    }
-  },
   {
     element: <TestDataViewTable />,
     path: '/tests/dataview/table',

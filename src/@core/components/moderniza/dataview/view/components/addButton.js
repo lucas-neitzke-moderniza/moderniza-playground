@@ -1,4 +1,7 @@
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect, useRef } from 'react'
 import { Button } from "primereact/button"
+import { DataviewDeviceSize } from "../../controller"
 
 /**
  * Add header button
@@ -6,10 +9,22 @@ import { Button } from "primereact/button"
 * @param {{label:String, icon: String, severity: String, className: String, style: Object, onClick: Function, size: String}} addOptions
  * @returns {JSX.Element}
  */
-const addButton = (addOptions) => {
+const addButton = (addOptions, deviceSize) => {
+
+    console.log('testdevice', deviceSize)
+
+    const getLabel = (value) => {
+        console.log('aqui', deviceSize)
+        if (deviceSize.width <= 380) {
+            return ''
+        } else {
+            return value
+        }
+    }
+
     return (
         <Button
-            label={addOptions?.label}
+            label={getLabel(addOptions?.label)}
             icon={addOptions?.icon}
             size={addOptions?.size}
             severity={addOptions?.severity}
