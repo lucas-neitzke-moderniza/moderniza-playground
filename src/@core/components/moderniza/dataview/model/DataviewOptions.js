@@ -677,7 +677,7 @@ class DataviewOptions {
                 className: '',
                 size: 'small',
                 severity: 'primary',
-                label: 'Arquivo (.pdf)',
+                label: 'Documento (.pdf)',
                 icon: 'pi pi-file-pdf',
                 style: { minWidth: '160px' }
             },
@@ -686,7 +686,7 @@ class DataviewOptions {
                 className: '',
                 size: 'small',
                 severity: 'success',
-                label: 'Arquivo (.xlsx)',
+                label: 'Planilha (.xlsx)',
                 icon: 'pi pi-file-excel',
                 style: { minWidth: '160px' }
             }
@@ -709,6 +709,10 @@ class DataviewOptions {
 
         // *DEFAULT SORTS
         if (options.sorts) {
+            // *DEFAULT SORTS VISIBLE
+            if (!options.sorts.visible) {
+                options.sorts.visible = defaultSort.visible
+            }
             // *DEFAULT SORTS CLASSNAME
             if (!options.sorts.className) {
                 options.sorts.className = defaultSort.className

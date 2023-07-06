@@ -166,7 +166,7 @@ const optionsTable = {
         _score: { operator: FilterOperator.AND, constraints: [{ value: '', matchMode: FilterMatchMode.GREATER_THAN }] }
     },
     sorts: {
-        visible: true,
+        // visible: true,
         sortField: 'title',
         sortOrder: 1,
         sortOptions: [

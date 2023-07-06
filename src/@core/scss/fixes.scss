@@ -21,6 +21,11 @@
     height: calc(100% - 165px);
 }
 
+.mdz-dataview-component.p-dataview-grid .p-dataview-content {
+    margin-left: -14px;
+    width: calc(100% + 28px);
+}
+
 .mdz-dataview-component .p-dataview-content{
     overflow: auto;
 }
@@ -43,13 +48,10 @@
 .mdz-dataview-component.p-dataview-grid .p-grid.grid.p-nogutter.grid-nogutter {
     display: flex;
     flex-wrap: wrap;
-    margin-top: calc(var(--bs-gutter-y) * -1);
-    margin-right: calc(var(--bs-gutter-x) * -.5);
-    margin-left: calc(var(--bs-gutter-x) * -.5);
 }
 
 @media (max-width:991.98px){
-    .mdz-dataview-component .p-dataview-header{
+    .mdz-dataview-component .p-dataview-header, .mdz-datatable-component .p-datatable-header{
         height: 130px !important;
     }
     .mdz-dataview-component .p-dataview-content, .mdz-datatable-component .p-datatable-wrapper{
