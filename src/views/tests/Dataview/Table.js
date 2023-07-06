@@ -2,6 +2,9 @@
 /* eslint-disable no-unused-vars */
 // ** React Imports
 import { Fragment, useEffect, useState } from 'react'
+// import test from '../../../../dist/bundle.js'
+
+// console.log('test module', test)
 
 // ** Component Imports
 import { Button } from 'primereact/button'
