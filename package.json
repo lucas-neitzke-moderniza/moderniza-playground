@@ -119,6 +119,7 @@
     "@babel/cli": "^7.22.6",
     "@babel/core": "^7.22.8",
     "@babel/eslint-parser": "^7.18.2",
+    "@babel/plugin-syntax-jsx": "^7.22.5",
     "@babel/preset-env": "^7.22.7",
     "@babel/preset-react": "^7.22.5",
     "@types/sortablejs": "^1.10.6",

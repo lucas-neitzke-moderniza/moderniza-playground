@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 const path = require('path')
+const extractLib = require('./extractLib.js')
 
 module.exports = {
   reactScriptsVersion: 'react-scripts',
@@ -14,6 +16,9 @@ module.exports = {
       plugins: [require('postcss-rtl')()]
     }
   },
+  babel: {
+    plugins:["@babel/plugin-syntax-jsx"]
+  },
   webpack: {
     alias: {
       '@src': path.resolve(__dirname, 'src'),
@@ -25,6 +30,9 @@ module.exports = {
       '@configs': path.resolve(__dirname, 'src/configs'),
       '@utils': path.resolve(__dirname, 'src/utility/Utils'),
       '@hooks': path.resolve(__dirname, 'src/utility/hooks')
+    },
+    configure: (webpackConfig, { env, paths }) => {
+      return extractLib(webpackConfig)
     }
   }
 }
