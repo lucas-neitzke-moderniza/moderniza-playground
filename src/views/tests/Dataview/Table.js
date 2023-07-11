@@ -256,9 +256,9 @@ const testDataview = () => {
         <Fragment>
             <div className='content-right'>
                 <div className='content-body'>
-                    <Dumb/>
+                    {/* <Dumb/> */}
                     {/* <Dataview options={options} /> */}
-                    {/* <Dataview options={optionsTable} /> */}
+                    <Dataview options={optionsTable} />
                 </div>
             </div>
         </Fragment>
