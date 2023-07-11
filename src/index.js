@@ -49,6 +49,12 @@ import './assets/scss/style.scss'
 // ** Service Worker
 import * as serviceWorker from './serviceWorker'
 
+// **Moderniza Components
+import "primereact/resources/themes/lara-light-indigo/theme.css"
+import "primereact/resources/primereact.min.css"
+import 'primeicons/primeicons.css'
+import 'moderniza-components/dist/index.css'
+
 // ** Lazy load app
 const LazyApp = lazy(() => import('./App'))
 

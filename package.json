@@ -39,7 +39,7 @@
     "jsonwebtoken": "8.5.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.29",
-    "moderniza-components": "^0.2.1",
+    "moderniza-components": "^0.2.3",
     "moment": "^2.29.3",
     "nouislider": "^15.5.0",
     "nouislider-react": "^3.4.1",

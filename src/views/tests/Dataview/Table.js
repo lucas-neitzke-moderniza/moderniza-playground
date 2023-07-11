@@ -19,11 +19,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api'
 
 // import { DataviewRequestContent, DataviewOptions, DataviewRequestEvent } from '../../../@core/components/moderniza/dataview/model'
 
-import { Dataview, DataviewOptions, DataviewRequestContent, DataviewRequestEvent } from 'moderniza-components'
-import primereactTheme from "primereact/resources/themes/lara-light-indigo/theme.css"
-import primeReact from "primereact/resources/primereact.min.css"
-import primeIcons from 'primeicons/primeicons.css'
-import mdzCSS from 'moderniza-components/dist/index.css'
+import { Dataview, Dumb, DataviewOptions, DataviewRequestContent, DataviewRequestEvent } from 'moderniza-components'
 
 import { Row, Col, Card, CardBody, CardText, CardTitle, CardSubtitle } from 'reactstrap'
 
@@ -260,7 +256,8 @@ const testDataview = () => {
         <Fragment>
             <div className='content-right'>
                 <div className='content-body'>
-                    <Dataview options={options} />
+                    <Dumb/>
+                    {/* <Dataview options={options} /> */}
                     {/* <Dataview options={optionsTable} /> */}
                 </div>
             </div>
